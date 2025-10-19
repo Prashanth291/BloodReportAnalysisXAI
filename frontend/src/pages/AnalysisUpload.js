@@ -113,7 +113,7 @@ const AnalysisUpload = () => {
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-blood-500 to-blood-600 p-4 rounded-2xl shadow-blood">
+            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-4 rounded-2xl shadow-lg">
               <svg
                 className="w-12 h-12 text-white"
                 fill="none"
@@ -145,10 +145,10 @@ const AnalysisUpload = () => {
               <div
                 className={`relative border-3 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
                   dragActive
-                    ? "border-blood-500 bg-blood-50"
+                    ? "border-primary-500 bg-primary-50"
                     : file
                     ? "border-green-500 bg-green-50"
-                    : "border-gray-300 hover:border-blood-400 hover:bg-gray-50"
+                    : "border-gray-300 hover:border-primary-400 hover:bg-gray-50"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -166,9 +166,9 @@ const AnalysisUpload = () => {
                   {!file ? (
                     <div className="space-y-4">
                       <div className="flex justify-center">
-                        <div className="bg-blood-100 p-6 rounded-full">
+                        <div className="bg-primary-100 p-6 rounded-full">
                           <svg
-                            className="w-16 h-16 text-blood-600"
+                            className="w-16 h-16 text-primary-600"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -294,7 +294,7 @@ const AnalysisUpload = () => {
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <button
                   type="submit"
-                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-blood-600 to-blood-700 text-white rounded-xl font-bold shadow-blood hover:shadow-blood-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!file || loading}
                 >
                   <svg
@@ -385,7 +385,7 @@ const AnalysisUpload = () => {
               <div className="mb-8">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <svg
-                    className="w-5 h-5 mr-2 text-blood-600"
+                    className="w-5 h-5 mr-2 text-primary-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -410,7 +410,7 @@ const AnalysisUpload = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => navigate(`/reports/${result.reportId}`)}
-                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-blood-600 to-blood-700 text-white rounded-xl font-bold shadow-blood hover:shadow-blood-lg transition-all duration-300 hover:scale-105"
+                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   <svg
                     className="w-5 h-5"

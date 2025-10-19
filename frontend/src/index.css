@@ -45,12 +45,6 @@
   .glass {
     @apply bg-white/10 backdrop-blur-lg border border-white/20;
   }
-
-  /* Blood drop animation */
-  .blood-drop {
-    @apply absolute rounded-full bg-gradient-to-b from-blood-400 to-blood-600;
-    animation: drop 2s ease-in-out infinite;
-  }
 }
 
 @keyframes spin {

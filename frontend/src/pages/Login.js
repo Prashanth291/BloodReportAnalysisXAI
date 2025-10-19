@@ -1,10 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import LoadingScreen from "../components/LoadingScreen";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, user } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -15,13 +16,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const { email, password } = formData;
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,40 +43,19 @@ const Login = () => {
     }
   };
 
+  if (loading) {
+    return <LoadingScreen message="Logging you in..." />;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blood-600 via-blood-700 to-blood-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="blood-drop opacity-5"
-            style={{
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 30 + 15}px`,
-              height: `${Math.random() * 40 + 20}px`,
-              animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${Math.random() * 3 + 2}s`,
-            }}
-          />
-        ))}
-
-        {/* Glowing orbs */}
-        <div className="absolute top-20 left-20 w-64 h-64 bg-blood-400/10 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-20 right-20 w-96 h-96 bg-blood-500/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-      </div>
-
-      {/* Login Card */}
-      <div className="max-w-md w-full space-y-8 relative z-10 animate-scale-in">
-        {/* Logo/Icon */}
-        <div className="text-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Header */}
+        <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-blood-400 to-blood-600 p-4 rounded-2xl shadow-glow-lg animate-heartbeat">
+            <div className="bg-primary-600 p-4 rounded-xl shadow-lg">
               <svg
-                className="w-12 h-12 text-white"
+                className="w-10 h-10 text-white"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -90,182 +63,98 @@ const Login = () => {
               </svg>
             </div>
           </div>
-          <h2 className="text-4xl font-extrabold text-white mb-2">
-            Welcome Back
-          </h2>
-          <p className="text-lg text-white/80">
-            Login to access your blood report analysis
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
+          <p className="mt-2 text-gray-600">Login to access your dashboard</p>
         </div>
 
         {/* Form Card */}
-        <div className="glass rounded-3xl shadow-2xl p-8 border border-white/20">
-          {/* Error Alert */}
+        <div className="bg-white rounded-xl shadow-lg p-8">
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/20 border border-red-500/50 text-white text-sm animate-slide-down">
-              <div className="flex items-center space-x-2">
-                <svg
-                  className="w-5 h-5 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{error}</span>
-              </div>
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+              {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
-            <div className="space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-white"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Email Address
               </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg
-                    className="w-5 h-5 text-white/60 group-focus-within:text-white transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/50 focus:bg-white/15 transition-all duration-300"
-                  value={email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                />
-              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                placeholder="john@example.com"
+              />
             </div>
 
-            {/* Password Field */}
-            <div className="space-y-2">
+            <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-white"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Password
               </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg
-                    className="w-5 h-5 text-white/60 group-focus-within:text-white transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/50 focus:bg-white/15 transition-all duration-300"
-                  value={password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                />
-              </div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                placeholder="••••••••"
+              />
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 bg-white text-blood-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-glow transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2 mt-8"
               disabled={loading}
+              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50"
             >
-              {loading ? (
-                <>
-                  <div className="blood-spinner w-6 h-6"></div>
-                  <span>Logging in...</span>
-                </>
-              ) : (
-                <>
-                  <span>Login</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                    />
-                  </svg>
-                </>
-              )}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          {/* Footer Link */}
-          <p className="mt-6 text-center text-white/80">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="font-semibold text-white hover:text-blood-200 transition-colors underline"
-            >
-              Register here
-            </Link>
-          </p>
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-primary-600 hover:text-primary-700 font-semibold"
+              >
+                Register here
+              </Link>
+            </p>
+          </div>
 
-          {/* Additional Links */}
           <div className="mt-4 text-center">
-            <Link
-              to="/"
-              className="text-sm text-white/60 hover:text-white transition-colors"
-            >
+            <Link to="/" className="text-gray-500 hover:text-gray-700 text-sm">
               ← Back to Home
             </Link>
           </div>
         </div>
 
-        {/* Trust Badge */}
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 text-white/60 text-sm">
+        {/* Security Badge */}
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center px-4 py-2 bg-white rounded-lg shadow-sm">
             <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              className="w-5 h-5 text-green-500 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                fillRule="evenodd"
+                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                clipRule="evenodd"
               />
             </svg>
-            <span>Secure login with encrypted connection</span>
+            <span className="text-sm text-gray-600">Secure & Encrypted</span>
           </div>
         </div>
       </div>

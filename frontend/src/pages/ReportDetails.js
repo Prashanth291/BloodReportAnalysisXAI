@@ -148,7 +148,7 @@ const ReportDetails = () => {
           <p className="text-gray-600 mb-8">{error}</p>
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-full py-4 bg-gradient-to-r from-blood-600 to-blood-700 text-white rounded-xl font-bold shadow-blood hover:shadow-blood-lg transition-all duration-300 hover:scale-105"
+            className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Back to Dashboard
           </button>
@@ -164,7 +164,7 @@ const ReportDetails = () => {
         <div className="mb-8 animate-fade-in">
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex items-center space-x-2 text-gray-600 hover:text-blood-600 transition-colors mb-6 group"
+            className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors mb-6 group"
           >
             <svg
               className="w-5 h-5 group-hover:-translate-x-1 transition-transform"
@@ -187,7 +187,7 @@ const ReportDetails = () => {
               <div className="flex-1">
                 <h1 className="text-3xl font-extrabold text-gray-900 mb-2 flex items-center">
                   <svg
-                    className="w-8 h-8 mr-3 text-blood-600"
+                    className="w-8 h-8 mr-3 text-primary-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -236,7 +236,7 @@ const ReportDetails = () => {
             <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 animate-slide-up">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                 <svg
-                  className="w-6 h-6 mr-3 text-blood-600"
+                  className="w-6 h-6 mr-3 text-primary-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -306,7 +306,7 @@ const ReportDetails = () => {
             >
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                 <svg
-                  className="w-6 h-6 mr-3 text-blood-600"
+                  className="w-6 h-6 mr-3 text-primary-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -352,7 +352,7 @@ const ReportDetails = () => {
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
             <svg
-              className="w-6 h-6 mr-3 text-blood-600"
+              className="w-6 h-6 mr-3 text-primary-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -365,7 +365,7 @@ const ReportDetails = () => {
               />
             </svg>
             Blood Test Parameters
-            <span className="ml-auto text-sm font-semibold text-blood-600 bg-blood-100 px-4 py-2 rounded-full">
+            <span className="ml-auto text-sm font-semibold text-primary-600 bg-primary-100 px-4 py-2 rounded-full">
               {report.extractedData?.parameters?.length || 0} Parameters
             </span>
           </h2>
@@ -378,7 +378,7 @@ const ReportDetails = () => {
                 return (
                   <div
                     key={index}
-                    className="group bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border-2 border-gray-200 hover:border-blood-300 hover:shadow-lg transition-all duration-300"
+                    className="group bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border-2 border-gray-200 hover:border-primary-300 hover:shadow-lg transition-all duration-300"
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                       <div className="flex-1">
@@ -389,7 +389,7 @@ const ReportDetails = () => {
                         <div className="flex flex-wrap gap-4 text-sm">
                           <div className="flex items-center space-x-2">
                             <svg
-                              className="w-4 h-4 text-blood-600"
+                              className="w-4 h-4 text-primary-600"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -409,7 +409,7 @@ const ReportDetails = () => {
                           {param.referenceRange && (
                             <div className="flex items-center space-x-2">
                               <svg
-                                className="w-4 h-4 text-blood-600"
+                                className="w-4 h-4 text-primary-600"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -467,7 +467,7 @@ const ReportDetails = () => {
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
             <svg
-              className="w-6 h-6 mr-3 text-blood-600"
+              className="w-6 h-6 mr-3 text-primary-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

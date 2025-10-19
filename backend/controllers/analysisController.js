@@ -28,13 +28,17 @@ export const uploadReport = async (req, res) => {
       analysisResult = await analyzeBloodReport(filePath, mimetype);
     }
 
-    // Save report to database
+    // Process parameters from extracted data
+    const processedParameters = processParameters(analysisResult.data);
+
+    // Save report to database with structured parameters
     const report = await Report.create({
       userId: req.user._id,
       fileName: originalname,
       fileType: mimetype,
       filePath: filePath,
-      extractedData: analysisResult.data,
+      parameters: processedParameters,
+      extractedData: analysisResult.data, // Keep original for reference
       rawText: analysisResult.rawText,
       status: "completed",
     });
@@ -46,6 +50,7 @@ export const uploadReport = async (req, res) => {
         reportId: report._id,
         fileName: report.fileName,
         fileType: report.fileType,
+        parameters: report.parameters,
         extractedData: report.extractedData,
         createdAt: report.createdAt,
       },
@@ -65,6 +70,139 @@ export const uploadReport = async (req, res) => {
       message: error.message || "Failed to analyze report",
     });
   }
+};
+
+// Helper function to process and structure parameters
+const processParameters = (extractedData) => {
+  const parameters = [];
+
+  if (!extractedData || !extractedData.parameters) {
+    return parameters;
+  }
+
+  extractedData.parameters.forEach((param) => {
+    const processedParam = {
+      name: param.name || "Unknown",
+      value: param.value || "N/A",
+      unit: param.unit || "",
+      referenceRange: {},
+      status: param.status?.toLowerCase() || "unknown",
+      category: categorizeParameter(param.name),
+    };
+
+    // Process reference range
+    if (param.referenceRange) {
+      const range = param.referenceRange.toString();
+      processedParam.referenceRange.range = range;
+
+      // Try to extract min/max from range like "10-20" or "10.5-20.5"
+      const rangeMatch = range.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
+      if (rangeMatch) {
+        processedParam.referenceRange.min = parseFloat(rangeMatch[1]);
+        processedParam.referenceRange.max = parseFloat(rangeMatch[2]);
+      }
+    }
+
+    parameters.push(processedParam);
+  });
+
+  return parameters;
+};
+
+// Helper function to categorize blood parameters
+const categorizeParameter = (paramName) => {
+  const name = paramName?.toLowerCase() || "";
+
+  // Complete Blood Count (CBC)
+  if (
+    name.includes("hemoglobin") ||
+    name.includes("hb") ||
+    name.includes("rbc") ||
+    name.includes("wbc") ||
+    name.includes("platelet") ||
+    name.includes("mcv") ||
+    name.includes("mch") ||
+    name.includes("hematocrit") ||
+    name.includes("eosinophil") ||
+    name.includes("neutrophil") ||
+    name.includes("lymphocyte") ||
+    name.includes("monocyte")
+  ) {
+    return "Complete Blood Count (CBC)";
+  }
+
+  // Lipid Profile
+  if (
+    name.includes("cholesterol") ||
+    name.includes("ldl") ||
+    name.includes("hdl") ||
+    name.includes("triglyceride") ||
+    name.includes("vldl")
+  ) {
+    return "Lipid Profile";
+  }
+
+  // Liver Function Tests
+  if (
+    name.includes("sgot") ||
+    name.includes("sgpt") ||
+    name.includes("alt") ||
+    name.includes("ast") ||
+    name.includes("bilirubin") ||
+    name.includes("alkaline") ||
+    name.includes("alp") ||
+    name.includes("ggt")
+  ) {
+    return "Liver Function Tests";
+  }
+
+  // Kidney Function Tests
+  if (
+    name.includes("creatinine") ||
+    name.includes("urea") ||
+    name.includes("bun") ||
+    name.includes("uric acid")
+  ) {
+    return "Kidney Function Tests";
+  }
+
+  // Thyroid Function
+  if (
+    name.includes("tsh") ||
+    name.includes("t3") ||
+    name.includes("t4") ||
+    name.includes("thyroid")
+  ) {
+    return "Thyroid Function";
+  }
+
+  // Blood Sugar
+  if (
+    name.includes("glucose") ||
+    name.includes("sugar") ||
+    name.includes("hba1c") ||
+    name.includes("glycated")
+  ) {
+    return "Blood Sugar";
+  }
+
+  // Electrolytes
+  if (
+    name.includes("sodium") ||
+    name.includes("potassium") ||
+    name.includes("chloride") ||
+    name.includes("calcium") ||
+    name.includes("magnesium")
+  ) {
+    return "Electrolytes";
+  }
+
+  // Vitamins
+  if (name.includes("vitamin") || name.includes("vit")) {
+    return "Vitamins";
+  }
+
+  return "Other Tests";
 };
 
 // @desc    Get all reports for a user
@@ -154,6 +292,179 @@ export const deleteReport = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message || "Failed to delete report",
+    });
+  }
+};
+
+// @desc    Get parameter trends across multiple reports
+// @route   GET /api/analysis/parameters/trends/:parameterName
+// @access  Private
+export const getParameterTrends = async (req, res) => {
+  try {
+    const { parameterName } = req.params;
+
+    const reports = await Report.find({
+      userId: req.user._id,
+      status: "completed",
+    })
+      .sort({ createdAt: 1 })
+      .select("parameters createdAt fileName");
+
+    // Extract the specific parameter from each report
+    const trends = reports
+      .map((report) => {
+        const param = report.parameters.find(
+          (p) => p.name.toLowerCase() === parameterName.toLowerCase()
+        );
+
+        if (param) {
+          return {
+            date: report.createdAt,
+            reportId: report._id,
+            fileName: report.fileName,
+            value: param.value,
+            unit: param.unit,
+            status: param.status,
+            referenceRange: param.referenceRange,
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null);
+
+    res.status(200).json({
+      success: true,
+      parameterName,
+      count: trends.length,
+      data: trends,
+    });
+  } catch (error) {
+    console.error("Get parameter trends error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to fetch parameter trends",
+    });
+  }
+};
+
+// @desc    Get all unique parameters across user's reports
+// @route   GET /api/analysis/parameters/list
+// @access  Private
+export const getAllParameters = async (req, res) => {
+  try {
+    const reports = await Report.find({
+      userId: req.user._id,
+      status: "completed",
+    }).select("parameters");
+
+    // Extract unique parameter names with their categories
+    const parameterMap = new Map();
+
+    reports.forEach((report) => {
+      report.parameters.forEach((param) => {
+        if (!parameterMap.has(param.name)) {
+          parameterMap.set(param.name, {
+            name: param.name,
+            category: param.category,
+            unit: param.unit,
+            count: 1,
+          });
+        } else {
+          parameterMap.get(param.name).count++;
+        }
+      });
+    });
+
+    const parameters = Array.from(parameterMap.values()).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    // Group by category
+    const groupedByCategory = parameters.reduce((acc, param) => {
+      const category = param.category || "Other";
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(param);
+      return acc;
+    }, {});
+
+    res.status(200).json({
+      success: true,
+      totalParameters: parameters.length,
+      data: {
+        all: parameters,
+        byCategory: groupedByCategory,
+      },
+    });
+  } catch (error) {
+    console.error("Get all parameters error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to fetch parameters",
+    });
+  }
+};
+
+// @desc    Search reports by parameter status
+// @route   GET /api/analysis/parameters/search?status=high&category=CBC
+// @access  Private
+export const searchByParameters = async (req, res) => {
+  try {
+    const { status, category, parameterName } = req.query;
+
+    const query = {
+      userId: req.user._id,
+      status: "completed",
+    };
+
+    // Build parameter filter
+    if (status) {
+      query["parameters.status"] = status.toLowerCase();
+    }
+    if (category) {
+      query["parameters.category"] = category;
+    }
+    if (parameterName) {
+      query["parameters.name"] = new RegExp(parameterName, "i");
+    }
+
+    const reports = await Report.find(query)
+      .sort({ createdAt: -1 })
+      .select("-filePath -rawText");
+
+    // Filter parameters in results if specific criteria provided
+    const filteredReports = reports.map((report) => {
+      const reportObj = report.toObject();
+
+      if (status || category || parameterName) {
+        reportObj.parameters = reportObj.parameters.filter((param) => {
+          let match = true;
+          if (status && param.status !== status.toLowerCase()) match = false;
+          if (category && param.category !== category) match = false;
+          if (
+            parameterName &&
+            !param.name.toLowerCase().includes(parameterName.toLowerCase())
+          )
+            match = false;
+          return match;
+        });
+      }
+
+      return reportObj;
+    });
+
+    res.status(200).json({
+      success: true,
+      count: filteredReports.length,
+      filters: { status, category, parameterName },
+      data: filteredReports,
+    });
+  } catch (error) {
+    console.error("Search parameters error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to search parameters",
     });
   }
 };

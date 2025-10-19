@@ -64,7 +64,7 @@ const Dashboard = () => {
             </div>
             <Link
               to="/analysis"
-              className="group flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blood-600 to-blood-700 text-white rounded-xl font-semibold shadow-blood hover:shadow-blood-lg transition-all duration-300 hover:scale-105"
+              className="group flex items-center space-x-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300"
             >
               <svg
                 className="w-5 h-5"
@@ -85,17 +85,19 @@ const Dashboard = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">
+                  <p className="text-gray-600 text-sm font-medium mb-1">
                     Total Reports
                   </p>
-                  <p className="text-4xl font-bold">{reports.length}</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {reports.length}
+                  </p>
                 </div>
-                <div className="bg-white/20 p-4 rounded-xl">
+                <div className="bg-blue-50 p-4 rounded-lg">
                   <svg
-                    className="w-8 h-8"
+                    className="w-8 h-8 text-blue-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -111,19 +113,19 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-medium mb-1">
+                  <p className="text-gray-600 text-sm font-medium mb-1">
                     Completed
                   </p>
-                  <p className="text-4xl font-bold">
+                  <p className="text-3xl font-bold text-gray-900">
                     {reports.filter((r) => r.status === "completed").length}
                   </p>
                 </div>
-                <div className="bg-white/20 p-4 rounded-xl">
+                <div className="bg-green-50 p-4 rounded-lg">
                   <svg
-                    className="w-8 h-8"
+                    className="w-8 h-8 text-green-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -139,13 +141,13 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100 text-sm font-medium mb-1">
+                  <p className="text-gray-600 text-sm font-medium mb-1">
                     Parameters
                   </p>
-                  <p className="text-4xl font-bold">
+                  <p className="text-3xl font-bold text-gray-900">
                     {reports.reduce(
                       (sum, r) =>
                         sum + (r.extractedData?.parameters?.length || 0),
@@ -153,9 +155,9 @@ const Dashboard = () => {
                     )}
                   </p>
                 </div>
-                <div className="bg-white/20 p-4 rounded-xl">
+                <div className="bg-purple-50 p-4 rounded-lg">
                   <svg
-                    className="w-8 h-8"
+                    className="w-8 h-8 text-purple-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -197,11 +199,11 @@ const Dashboard = () => {
 
         {/* Reports Grid or Empty State */}
         {reports.length === 0 ? (
-          <div className="bg-white rounded-3xl shadow-xl p-12 text-center animate-scale-in">
+          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
             <div className="flex justify-center mb-6">
-              <div className="bg-gradient-to-br from-blood-100 to-blood-200 p-8 rounded-full">
+              <div className="bg-gray-100 p-8 rounded-full">
                 <svg
-                  className="w-20 h-20 text-blood-600"
+                  className="w-20 h-20 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -215,16 +217,16 @@ const Dashboard = () => {
                 </svg>
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
               No Reports Yet
             </h2>
-            <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">
               Upload your first blood test report to get started with AI-powered
               analysis and insights.
             </p>
             <Link
               to="/analysis"
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-blood-600 to-blood-700 text-white rounded-xl font-semibold shadow-blood hover:shadow-blood-lg transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300"
             >
               <svg
                 className="w-5 h-5"
@@ -247,53 +249,47 @@ const Dashboard = () => {
             {reports.map((report, index) => (
               <div
                 key={report._id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group animate-scale-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
               >
                 {/* Card Header */}
-                <div className="bg-gradient-to-br from-blood-500 to-blood-600 p-6 text-white relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-                  <div className="relative">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="bg-white/20 p-3 rounded-xl">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          report.status === "completed"
-                            ? "bg-green-500 text-white"
-                            : report.status === "processing"
-                            ? "bg-yellow-500 text-white"
-                            : "bg-gray-500 text-white"
-                        }`}
+                <div className="bg-gradient-to-r from-primary-500 to-indigo-600 p-6 text-white">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="bg-white/20 p-2 rounded-lg">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {report.status}
-                      </span>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
                     </div>
-                    <h3 className="text-lg font-bold mb-2 truncate">
-                      {report.fileName}
-                    </h3>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        report.status === "completed"
+                          ? "bg-green-500 text-white"
+                          : report.status === "processing"
+                          ? "bg-yellow-500 text-white"
+                          : "bg-gray-500 text-white"
+                      }`}
+                    >
+                      {report.status}
+                    </span>
                   </div>
+                  <h3 className="font-semibold truncate">{report.fileName}</h3>
                 </div>
 
                 {/* Card Body */}
                 <div className="p-6">
                   <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-gray-600">
+                    <div className="flex items-center text-gray-600 text-sm">
                       <svg
-                        className="w-5 h-5 mr-3 text-blood-500"
+                        className="w-4 h-4 mr-2 text-primary-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -305,13 +301,11 @@ const Dashboard = () => {
                           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                      <span className="text-sm">
-                        {formatDate(report.createdAt)}
-                      </span>
+                      {formatDate(report.createdAt)}
                     </div>
-                    <div className="flex items-center text-gray-600">
+                    <div className="flex items-center text-gray-600 text-sm">
                       <svg
-                        className="w-5 h-5 mr-3 text-blood-500"
+                        className="w-4 h-4 mr-2 text-primary-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -323,7 +317,7 @@ const Dashboard = () => {
                           d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                         />
                       </svg>
-                      <span className="text-sm font-semibold">
+                      <span className="font-semibold">
                         {report.extractedData?.parameters?.length || 0}{" "}
                         parameters
                       </span>
@@ -334,7 +328,7 @@ const Dashboard = () => {
                   <div className="flex space-x-3">
                     <Link
                       to={`/reports/${report._id}`}
-                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blood-600 to-blood-700 text-white rounded-xl font-semibold hover:shadow-blood transition-all duration-300 hover:scale-105"
+                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300"
                     >
                       <svg
                         className="w-4 h-4"
@@ -359,7 +353,7 @@ const Dashboard = () => {
                     </Link>
                     <button
                       onClick={() => handleDelete(report._id)}
-                      className="px-4 py-3 bg-red-50 text-red-600 rounded-xl font-semibold hover:bg-red-100 transition-all duration-300 hover:scale-105"
+                      className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg font-semibold transition-all duration-300"
                     >
                       <svg
                         className="w-5 h-5"
