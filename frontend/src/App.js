@@ -16,46 +16,48 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import AnalysisUpload from "./pages/AnalysisUpload";
 import ReportDetails from "./pages/ReportDetails";
-import "./App.css";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
+        <div className="min-h-screen bg-gray-50">
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/verify-email/:token" element={<VerifyEmail />} />
-            <Route path="/verify-otp" element={<VerifyOTP />} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/analysis"
-              element={
-                <PrivateRoute>
-                  <AnalysisUpload />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/reports/:id"
-              element={
-                <PrivateRoute>
-                  <ReportDetails />
-                </PrivateRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+          {/* Add padding-top to account for fixed navbar */}
+          <div className="pt-20">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
+              <Route path="/verify-otp" element={<VerifyOTP />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/analysis"
+                element={
+                  <PrivateRoute>
+                    <AnalysisUpload />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/reports/:id"
+                element={
+                  <PrivateRoute>
+                    <ReportDetails />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </div>
         </div>
       </Router>
     </AuthProvider>
