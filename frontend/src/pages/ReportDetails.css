@@ -1,0 +1,183 @@
+.report-details-page {
+  min-height: calc(100vh - 70px);
+  padding: 40px 0;
+}
+
+.report-header-section {
+  margin-bottom: 30px;
+}
+
+.back-btn {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #f0f0f0;
+}
+
+.report-header-section h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.report-date {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+}
+
+.info-card {
+  margin-bottom: 30px;
+}
+
+.info-card h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+}
+
+.info-value {
+  color: #333;
+  font-size: 16px;
+}
+
+.parameters-card {
+  margin-bottom: 30px;
+}
+
+.parameters-card h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.parameters-table {
+  overflow-x: auto;
+}
+
+.parameters-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.parameters-table thead {
+  background: #f8f9fa;
+}
+
+.parameters-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.parameters-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.parameters-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.param-name {
+  font-weight: 600;
+}
+
+.param-value {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.json-card {
+  margin-bottom: 30px;
+}
+
+.json-card h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.json-display {
+  background: #282c34;
+  color: #61dafb;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.actions-section {
+  text-align: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+  .report-header-section h1 {
+    font-size: 24px;
+  }
+
+  .parameters-table {
+    font-size: 14px;
+  }
+
+  .parameters-table th,
+  .parameters-table td {
+    padding: 8px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
