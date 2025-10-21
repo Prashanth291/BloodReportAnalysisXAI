@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import analysisRoutes from "./routes/analysisRoutes.js";
+import parameterRoutes from "./routes/parameterRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import {
   initializeGeminiAPI,
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/analysis", analysisRoutes);
+app.use("/api/parameters", parameterRoutes);
 
 // Error handling middleware
 app.use(notFound);

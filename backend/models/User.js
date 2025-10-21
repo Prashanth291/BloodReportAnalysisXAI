@@ -47,6 +47,63 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpiry: {
       type: Date,
     },
+    profile: {
+      age: {
+        type: Number,
+        min: 0,
+        max: 120,
+      },
+      dateOfBirth: {
+        type: Date,
+      },
+      gender: {
+        type: String,
+        enum: ["male", "female", "other"],
+        lowercase: true,
+      },
+      conditions: [
+        {
+          type: String,
+          enum: [
+            "pregnant",
+            "diabetic",
+            "hypertensive",
+            "kidney_disease",
+            "liver_disease",
+            "heart_disease",
+            "thyroid_disorder",
+          ],
+          lowercase: true,
+        },
+      ],
+      ethnicity: {
+        type: String,
+        enum: ["general", "african", "asian", "caucasian", "hispanic", "other"],
+        default: "general",
+        lowercase: true,
+      },
+      medications: [String],
+      bloodGroup: {
+        type: String,
+        enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      },
+      height: Number, // in cm
+      weight: Number, // in kg
+      lifestyle: {
+        smoking: {
+          type: String,
+          enum: ["never", "former", "current"],
+        },
+        alcohol: {
+          type: String,
+          enum: ["never", "occasional", "moderate", "heavy"],
+        },
+        exercise: {
+          type: String,
+          enum: ["sedentary", "light", "moderate", "active", "very_active"],
+        },
+      },
+    },
   },
   {
     timestamps: true,

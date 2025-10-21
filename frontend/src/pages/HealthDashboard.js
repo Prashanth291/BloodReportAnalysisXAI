@@ -19,7 +19,7 @@ const HealthDashboard = () => {
   const fetchReports = async () => {
     try {
       const response = await getUserReports();
-      
+
       // Handle different response structures
       let reportsData = [];
       if (response?.data?.data) {

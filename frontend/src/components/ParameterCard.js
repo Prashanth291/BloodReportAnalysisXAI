@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { getParameterInsight, getSeverityColor } from "../utils/parameterInsights";
 
 const ParameterCard = ({ parameter }) => {
+  const [showInsight, setShowInsight] = useState(false);
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "normal":
@@ -159,6 +161,11 @@ const ParameterCard = ({ parameter }) => {
   };
 
   const colors = getStatusColor(parameter.status);
+  
+  // Get health insight for abnormal parameters
+  const insight = parameter.status !== 'normal' && parameter.status !== 'unknown' 
+    ? getParameterInsight(parameter.name, parameter.status, parameter.value, parameter.referenceRange)
+    : null;
 
   return (
     <div
@@ -249,6 +256,122 @@ const ParameterCard = ({ parameter }) => {
             </div>
           )}
       </div>
+
+      {/* Health Insight Section - Show for abnormal parameters */}
+      {insight && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <button
+            onClick={() => setShowInsight(!showInsight)}
+            className="flex items-center justify-between w-full text-left focus:outline-none"
+          >
+            <span className="text-sm font-semibold text-gray-700 flex items-center">
+              <svg
+                className="w-5 h-5 mr-2 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              What does this mean?
+            </span>
+            <svg
+              className={`w-5 h-5 text-gray-500 transform transition-transform ${
+                showInsight ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {/* Expandable Insight Content */}
+          {showInsight && (
+            <div className="mt-3 space-y-3 animate-fadeIn">
+              {/* Alert Message */}
+              <div className={`p-3 rounded-lg border ${getSeverityColor(insight.severity).bg} ${getSeverityColor(insight.severity).border}`}>
+                <div className="flex items-start">
+                  <svg
+                    className={`w-5 h-5 mr-2 mt-0.5 ${getSeverityColor(insight.severity).icon} flex-shrink-0`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                  <div>
+                    <p className={`font-semibold text-sm ${getSeverityColor(insight.severity).text}`}>
+                      {insight.message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Explanation */}
+              <div className="bg-white p-3 rounded-lg border border-gray-200">
+                <h4 className="font-semibold text-sm text-gray-900 mb-1">Why is this important?</h4>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {insight.explanation}
+                </p>
+              </div>
+
+              {/* Recommendations */}
+              {insight.recommendations && insight.recommendations.length > 0 && (
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-sm text-blue-900 mb-2 flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Recommended Actions:
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {insight.recommendations.map((rec, index) => (
+                      <li key={index} className="text-sm text-blue-800 flex items-start">
+                        <span className="mr-2 text-blue-600 font-bold">•</span>
+                        <span>{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Disclaimer */}
+              <div className="bg-gray-50 p-2 rounded border border-gray-200">
+                <p className="text-xs text-gray-600 italic">
+                  ⚕️ This information is for educational purposes only. Always consult your healthcare provider for medical advice.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
