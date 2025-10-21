@@ -18,7 +18,7 @@ Each report now stores:
   fileName: String,
   fileType: String,
   filePath: String,
-  
+
   // 🆕 Structured Parameters Array
   parameters: [
     {
@@ -47,11 +47,11 @@ Each report now stores:
     }
     // ... more parameters
   ],
-  
+
   // Original AI response (for backup)
   extractedData: Mixed,
   rawText: String,
-  
+
   status: "completed",
   createdAt: Date,
   updatedAt: Date
@@ -65,28 +65,36 @@ Each report now stores:
 Parameters are automatically categorized into:
 
 1. **Complete Blood Count (CBC)**
+
    - Hemoglobin, RBC, WBC, Platelets, MCV, MCH, MCHC, Hematocrit
    - Neutrophils, Lymphocytes, Eosinophils, Monocytes
 
 2. **Lipid Profile**
+
    - Total Cholesterol, LDL, HDL, Triglycerides, VLDL
 
 3. **Liver Function Tests**
+
    - SGOT, SGPT, ALT, AST, Bilirubin, Alkaline Phosphatase, GGT
 
 4. **Kidney Function Tests**
+
    - Creatinine, Urea, BUN, Uric Acid
 
 5. **Thyroid Function**
+
    - TSH, T3, T4
 
 6. **Blood Sugar**
+
    - Glucose (Fasting/Random), HbA1c
 
 7. **Electrolytes**
+
    - Sodium, Potassium, Chloride, Calcium, Magnesium
 
 8. **Vitamins**
+
    - Vitamin D, B12, etc.
 
 9. **Other Tests**
@@ -97,11 +105,13 @@ Parameters are automatically categorized into:
 ## 🔌 New API Endpoints
 
 ### 1. **Upload Report** (Enhanced)
+
 ```
 POST /api/analysis/upload
 ```
 
 **Response includes structured parameters:**
+
 ```json
 {
   "success": true,
@@ -123,11 +133,13 @@ POST /api/analysis/upload
 ```
 
 ### 2. **Get All Parameters**
+
 ```
 GET /api/analysis/parameters/list
 ```
 
 **Returns all unique parameters across user's reports:**
+
 ```json
 {
   "success": true,
@@ -151,6 +163,7 @@ GET /api/analysis/parameters/list
 ```
 
 ### 3. **Get Parameter Trends**
+
 ```
 GET /api/analysis/parameters/trends/:parameterName
 ```
@@ -158,6 +171,7 @@ GET /api/analysis/parameters/trends/:parameterName
 **Example:** `/api/analysis/parameters/trends/Hemoglobin`
 
 **Track a specific parameter over time:**
+
 ```json
 {
   "success": true,
@@ -183,16 +197,19 @@ GET /api/analysis/parameters/trends/:parameterName
 ```
 
 ### 4. **Search by Parameters**
+
 ```
 GET /api/analysis/parameters/search?status=high&category=Lipid Profile
 ```
 
 **Query Parameters:**
+
 - `status`: `normal`, `high`, `low`, `abnormal`
 - `category`: Category name
 - `parameterName`: Search by parameter name
 
 **Returns reports with matching parameters:**
+
 ```json
 {
   "success": true,
@@ -224,31 +241,39 @@ GET /api/analysis/parameters/search?status=high&category=Lipid Profile
 ## 💡 Use Cases
 
 ### 1. **Track Health Trends**
+
 Monitor how specific parameters change over time:
+
 ```javascript
 // Get Hemoglobin trends
-GET /api/analysis/parameters/trends/Hemoglobin
+GET / api / analysis / parameters / trends / Hemoglobin;
 
 // Get Glucose trends
-GET /api/analysis/parameters/trends/Glucose
+GET / api / analysis / parameters / trends / Glucose;
 ```
 
 ### 2. **Find Abnormal Results**
+
 Quickly find all reports with high cholesterol:
+
 ```javascript
 GET /api/analysis/parameters/search?status=high&parameterName=Cholesterol
 ```
 
 ### 3. **Category-wise Analysis**
+
 Get all kidney function test results:
+
 ```javascript
 GET /api/analysis/parameters/search?category=Kidney Function Tests
 ```
 
 ### 4. **Dashboard Overview**
+
 Get all unique parameters to build a health dashboard:
+
 ```javascript
-GET /api/analysis/parameters/list
+GET / api / analysis / parameters / list;
 ```
 
 ---
@@ -256,6 +281,7 @@ GET /api/analysis/parameters/list
 ## 🔍 MongoDB Indexes
 
 For fast queries, these indexes are automatically created:
+
 - `userId + createdAt` (for user reports)
 - `parameters.name` (for parameter searches)
 - `parameters.status` (for status filters)
@@ -265,6 +291,7 @@ For fast queries, these indexes are automatically created:
 ## 📱 Frontend Integration Examples
 
 ### Display Parameter Trends Chart
+
 ```javascript
 const getTrends = async (parameterName) => {
   const response = await fetch(
@@ -272,34 +299,34 @@ const getTrends = async (parameterName) => {
     { headers: { Authorization: `Bearer ${token}` } }
   );
   const data = await response.json();
-  
+
   // data.data contains time-series values
   // Plot on chart: dates vs values
 };
 ```
 
 ### Show All Abnormal Parameters
+
 ```javascript
 const getAbnormalResults = async () => {
-  const response = await fetch(
-    '/api/analysis/parameters/search?status=high',
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  const response = await fetch("/api/analysis/parameters/search?status=high", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   const data = await response.json();
-  
+
   // Display reports with high values
 };
 ```
 
 ### Build Parameter Filter
+
 ```javascript
 const getAllParams = async () => {
-  const response = await fetch(
-    '/api/analysis/parameters/list',
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  const response = await fetch("/api/analysis/parameters/list", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   const data = await response.json();
-  
+
   // Use data.data.byCategory to build categorized filters
 };
 ```
@@ -314,7 +341,7 @@ const getAllParams = async () => {
 ✅ **Smart Categorization** - Auto-categorizes into medical groups  
 ✅ **Flexible Search** - Filter by status, category, name  
 ✅ **Backward Compatible** - Original data still in `extractedData`  
-✅ **Scalable** - Can handle unlimited parameters dynamically  
+✅ **Scalable** - Can handle unlimited parameters dynamically
 
 ---
 

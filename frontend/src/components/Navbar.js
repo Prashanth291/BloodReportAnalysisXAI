@@ -27,16 +27,28 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link
+                  to="/health"
+                  className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                >
+                  Health
+                </Link>
+                <Link
                   to="/dashboard"
                   className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
                 >
-                  Dashboard
+                  Reports
+                </Link>
+                <Link
+                  to="/trends"
+                  className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                >
+                  Trends
                 </Link>
                 <Link
                   to="/analysis"
                   className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
                 >
-                  New Analysis
+                  Upload
                 </Link>
                 <span className="px-4 py-2 text-gray-600">Hi, {user.name}</span>
                 <button
@@ -101,18 +113,32 @@ const Navbar = () => {
                   Hi, {user.name}
                 </span>
                 <Link
+                  to="/health"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                >
+                  Health Dashboard
+                </Link>
+                <Link
                   to="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
                 >
-                  Dashboard
+                  All Reports
+                </Link>
+                <Link
+                  to="/trends"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                >
+                  Parameter Trends
                 </Link>
                 <Link
                   to="/analysis"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
                 >
-                  New Analysis
+                  Upload New Report
                 </Link>
                 <button
                   onClick={() => {

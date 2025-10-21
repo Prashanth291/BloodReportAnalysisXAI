@@ -14,6 +14,8 @@ import VerifyEmail from "./pages/VerifyEmail";
 import VerifyOTP from "./pages/VerifyOTP";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import HealthDashboard from "./pages/HealthDashboard";
+import ParameterTrends from "./pages/ParameterTrends";
 import AnalysisUpload from "./pages/AnalysisUpload";
 import ReportDetails from "./pages/ReportDetails";
 
@@ -36,6 +38,30 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/health"
+                element={
+                  <PrivateRoute>
+                    <HealthDashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/trends"
+                element={
+                  <PrivateRoute>
+                    <ParameterTrends />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/trends/:parameterName"
+                element={
+                  <PrivateRoute>
+                    <ParameterTrends />
                   </PrivateRoute>
                 }
               />
