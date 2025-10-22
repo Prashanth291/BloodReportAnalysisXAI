@@ -1,0 +1,96 @@
+[
+  {
+    "parameter": "hemoglobin_status",
+    "train_accuracy": 1.0,
+    "test_accuracy": 0.9983364755461905,
+    "train_f1": 1.0,
+    "test_f1": 0.9983291524924092,
+    "n_features": 28,
+    "n_train_samples": 36065,
+    "n_test_samples": 9017,
+    "classes": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "parameter": "wbc_status",
+    "train_accuracy": 1.0,
+    "test_accuracy": 0.9984473771764445,
+    "train_f1": 1.0,
+    "test_f1": 0.9984491705762903,
+    "n_features": 28,
+    "n_train_samples": 36065,
+    "n_test_samples": 9017,
+    "classes": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "parameter": "platelet_status",
+    "train_accuracy": 1.0,
+    "test_accuracy": 0.9960075413108572,
+    "train_f1": 1.0,
+    "test_f1": 0.9960014181693376,
+    "n_features": 28,
+    "n_train_samples": 36065,
+    "n_test_samples": 9017,
+    "classes": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "parameter": "neutrophil_status",
+    "train_accuracy": 0.99997227228615,
+    "test_accuracy": 0.9960075413108572,
+    "train_f1": 0.9999722645497141,
+    "test_f1": 0.99600646203862,
+    "n_features": 28,
+    "n_train_samples": 36065,
+    "n_test_samples": 9017,
+    "classes": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "parameter": "lymphocyte_status",
+    "train_accuracy": 1.0,
+    "test_accuracy": 0.996894754352889,
+    "train_f1": 1.0,
+    "test_f1": 0.9967841466400453,
+    "n_features": 28,
+    "n_train_samples": 36065,
+    "n_test_samples": 9017,
+    "classes": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "parameter": "rdw_status",
+    "train_accuracy": 1.0,
+    "test_accuracy": 0.9980037706554287,
+    "train_f1": 1.0,
+    "test_f1": 0.99800513100452,
+    "n_features": 28,
+    "n_train_samples": 36065,
+    "n_test_samples": 9017,
+    "classes": [
+      0,
+      1,
+      2
+    ]
+  }
+]

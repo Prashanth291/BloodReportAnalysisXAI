@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getParameterInterpretation } from "../utils/parameterInterpretations";
+import { getXAIInterpretation } from "../services/xaiService";
 
 const DocusParameterCard = ({ parameter }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("analysis"); // 'analysis' or 'indicators'
+  const [interpretation, setInterpretation] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Get status color scheme matching Docus.ai
   const getStatusConfig = (status) => {
@@ -45,13 +49,60 @@ const DocusParameterCard = ({ parameter }) => {
 
   const statusConfig = getStatusConfig(parameter.status);
 
-  // Get interpretation data
-  const interpretation = getParameterInterpretation(
-    parameter.name,
-    parameter.status,
-    parameter.value,
-    parameter.referenceRange
-  );
+  // Caching: Use a simple in-memory cache (could be replaced with localStorage or backend cache)
+  const cacheKey = `${parameter.name}|${parameter.status}|${
+    parameter.value
+  }|${JSON.stringify(parameter.referenceRange)}`;
+  const cache =
+    window.__xaiInterpretationCache || (window.__xaiInterpretationCache = {});
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
+    // Check cache first
+    if (cache[cacheKey]) {
+      setInterpretation(cache[cacheKey]);
+      setLoading(false);
+      return;
+    }
+    // Fetch from Flask XAI API
+    getXAIInterpretation({
+      parameterName: parameter.name,
+      value: parameter.value,
+      status: parameter.status,
+      referenceRange: parameter.referenceRange,
+      userProfile: {},
+      shap: true,
+      token: "dev-secret-token",
+    })
+      .then((data) => {
+        if (isMounted) {
+          setInterpretation(data);
+          cache[cacheKey] = data;
+        }
+      })
+      .catch((err) => {
+        // Fallback to local logic if API fails
+        if (isMounted) {
+          setError("XAI service unavailable, using local interpretation.");
+          const localInterp = getParameterInterpretation(
+            parameter.name,
+            parameter.status,
+            parameter.value,
+            parameter.referenceRange
+          );
+          setInterpretation(localInterp);
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cacheKey]);
 
   // Calculate position on range bar
   const calculateBarPosition = () => {
@@ -223,8 +274,20 @@ const DocusParameterCard = ({ parameter }) => {
               </button>
             </div>
 
-            {/* Analysis Tab Content */}
-            {activeTab === "analysis" && (
+            {/* Loading/Error State */}
+            {loading && (
+              <div className="text-center py-8 text-gray-500">
+                Loading XAI interpretation...
+              </div>
+            )}
+            {error && (
+              <div className="text-center py-2 text-orange-600 text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Only render content if interpretation is available */}
+            {interpretation && activeTab === "analysis" && (
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
                   Screening Interpretation
@@ -413,6 +476,54 @@ const DocusParameterCard = ({ parameter }) => {
                 <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
                   Parameter Indicators
                 </h4>
+
+                {/* SHAP/Feature Importance Visualization */}
+                {interpretation &&
+                  interpretation.shap_values &&
+                  interpretation.feature_names && (
+                    <div className="bg-white rounded-lg p-4 mb-4 border border-purple-200">
+                      <h5 className="text-xs font-semibold text-purple-700 mb-3 uppercase flex items-center">
+                        <svg
+                          className="w-4 h-4 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        XAI Feature Importance (SHAP)
+                      </h5>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-xs">
+                          <thead>
+                            <tr>
+                              <th className="text-left py-1 px-2">Feature</th>
+                              <th className="text-left py-1 px-2">
+                                SHAP Value
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {interpretation.feature_names.map((name, idx) => (
+                              <tr key={name}>
+                                <td className="py-1 px-2 font-medium text-gray-900">
+                                  {name}
+                                </td>
+                                <td className="py-1 px-2 text-gray-700">
+                                  {interpretation.shap_values[idx]?.toFixed(3)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
 
                 {/* Current Value Card */}
                 <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200">

@@ -1,0 +1,44 @@
+{
+  "hemoglobin_g_dL": {
+    "male": [
+      13.5,
+      17.5
+    ],
+    "female": [
+      12.0,
+      15.5
+    ],
+    "critical_low": 7.0,
+    "critical_high": 25.0
+  },
+  "wbc_10e9_L": [
+    4.0,
+    11.0,
+    2.0,
+    20.0
+  ],
+  "platelet_count": [
+    150,
+    400,
+    50,
+    1000
+  ],
+  "neutrophils_percent": [
+    40,
+    60,
+    10,
+    95
+  ],
+  "lymphocytes_percent": [
+    20,
+    40,
+    1,
+    90
+  ],
+  "rdw_percent": [
+    11.5,
+    14.5,
+    null,
+    null
+  ]
+}

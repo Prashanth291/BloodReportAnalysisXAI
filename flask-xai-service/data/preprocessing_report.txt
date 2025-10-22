@@ -1,0 +1,13 @@
+Preprocessing complete
+Train samples: 36065
+Test samples: 9017
+Feature columns: 43
+Target columns: ['hemoglobin_status', 'wbc_status', 'platelet_status', 'neutrophil_status', 'lymphocyte_status', 'rdw_status']
+
+Train class distributions:
+  hemoglobin_status: {0: 32786, 1: 2904, 2: 375}
+  wbc_status: {0: 26637, 2: 4184, 1: 3712, 3: 1532}
+  platelet_status: {0: 31106, 1: 3575, 2: 1181, 3: 203}
+  neutrophil_status: {1: 18246, 0: 12328, 2: 4737, 3: 754}
+  lymphocyte_status: {0: 15865, 2: 11803, 1: 8379, 3: 18}
+  rdw_status: {0: 24526, 1: 5780, 2: 5759}

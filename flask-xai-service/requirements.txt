@@ -1,0 +1,8 @@
+flask
+flask-restful
+pandas
+scikit-learn
+xgboost
+shap
+joblib
+pymongo

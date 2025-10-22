@@ -1,0 +1,138 @@
+{
+  "hemoglobin_g_dL": {
+    "description": "Hemoglobin concentration in blood",
+    "unit": "g/dL",
+    "male": {
+      "critical_low": 7.0,
+      "low": 13.5,
+      "high": 17.5,
+      "critical_high": 20.0
+    },
+    "female": {
+      "critical_low": 7.0,
+      "low": 12.0,
+      "high": 15.5,
+      "critical_high": 20.0
+    },
+    "pregnant_adjustment": -0.5,
+    "age_65_plus_adjustment": -0.3
+  },
+  "wbc_10e9_L": {
+    "description": "White blood cell count",
+    "unit": "10^9/L",
+    "critical_low": 2.0,
+    "low": 4.0,
+    "high": 11.0,
+    "critical_high": 20.0,
+    "diabetic_shift": 0.5
+  },
+  "platelet_count": {
+    "description": "Platelet count",
+    "unit": "10^3/μL",
+    "critical_low": 50,
+    "low": 150,
+    "high": 400,
+    "critical_high": 1000,
+    "pregnant_adjustment": -30
+  },
+  "rbc_count": {
+    "description": "Red blood cell count",
+    "unit": "10^6/μL",
+    "male": {
+      "critical_low": 3.0,
+      "low": 4.5,
+      "high": 5.9,
+      "critical_high": 7.0
+    },
+    "female": {
+      "critical_low": 2.8,
+      "low": 4.0,
+      "high": 5.2,
+      "critical_high": 6.5
+    }
+  },
+  "mcv_fL": {
+    "description": "Mean corpuscular volume",
+    "unit": "fL",
+    "critical_low": 60,
+    "low": 80,
+    "high": 100,
+    "critical_high": 120
+  },
+  "mch_pg": {
+    "description": "Mean corpuscular hemoglobin",
+    "unit": "pg",
+    "critical_low": 20,
+    "low": 27,
+    "high": 33,
+    "critical_high": 40
+  },
+  "mchc_g_dL": {
+    "description": "Mean corpuscular hemoglobin concentration",
+    "unit": "g/dL",
+    "critical_low": 28,
+    "low": 32,
+    "high": 36,
+    "critical_high": 38
+  },
+  "rdw_percent": {
+    "description": "Red cell distribution width",
+    "unit": "%",
+    "low": 11.5,
+    "high": 14.5,
+    "critical_high": 20.0
+  },
+  "neutrophils_percent": {
+    "description": "Neutrophil percentage",
+    "unit": "%",
+    "critical_low": 10,
+    "low": 40,
+    "high": 70,
+    "critical_high": 95
+  },
+  "lymphocytes_percent": {
+    "description": "Lymphocyte percentage",
+    "unit": "%",
+    "critical_low": 1,
+    "low": 20,
+    "high": 40,
+    "critical_high": 90
+  },
+  "monocytes_percent": {
+    "description": "Monocyte percentage",
+    "unit": "%",
+    "low": 2,
+    "high": 10,
+    "critical_high": 20
+  },
+  "eosinophils_percent": {
+    "description": "Eosinophil percentage",
+    "unit": "%",
+    "low": 0,
+    "high": 5,
+    "critical_high": 15
+  },
+  "basophils_percent": {
+    "description": "Basophil percentage",
+    "unit": "%",
+    "low": 0,
+    "high": 2,
+    "critical_high": 5
+  },
+  "neutrophils_abs": {
+    "description": "Absolute neutrophil count",
+    "unit": "10^9/L",
+    "critical_low": 0.5,
+    "low": 2.0,
+    "high": 7.0,
+    "critical_high": 15.0
+  },
+  "lymphocytes_abs": {
+    "description": "Absolute lymphocyte count",
+    "unit": "10^9/L",
+    "critical_low": 0.5,
+    "low": 1.0,
+    "high": 4.0,
+    "critical_high": 10.0
+  }
+}

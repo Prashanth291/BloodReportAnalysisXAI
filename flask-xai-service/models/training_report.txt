@@ -1,0 +1,33 @@
+============================================================
+TRAINING SUMMARY
+============================================================
+
+Parameter: hemoglobin_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9983, F1: 0.9983
+  Features: 28, Classes: [0, 1, 2]
+
+Parameter: wbc_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9984, F1: 0.9984
+  Features: 28, Classes: [0, 1, 2, 3]
+
+Parameter: platelet_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9960, F1: 0.9960
+  Features: 28, Classes: [0, 1, 2, 3]
+
+Parameter: neutrophil_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9960, F1: 0.9960
+  Features: 28, Classes: [0, 1, 2, 3]
+
+Parameter: lymphocyte_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9969, F1: 0.9968
+  Features: 28, Classes: [0, 1, 2, 3]
+
+Parameter: rdw_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9980, F1: 0.9980
+  Features: 28, Classes: [0, 1, 2]
