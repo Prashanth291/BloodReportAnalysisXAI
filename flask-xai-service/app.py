@@ -163,9 +163,13 @@ def interpret():
         features_dict = preprocess_input(data)
         # Convert to DataFrame matching training features
         feature_df = pd.DataFrame([features_dict])
-        # Select only numeric features that model expects (28 features)
-        numeric_cols = feature_df.select_dtypes(include=[np.number]).columns
-        X = feature_df[numeric_cols]
+        # Align DataFrame columns to model's expected features
+        try:
+            expected_features = model.get_booster().feature_names
+        except Exception:
+            expected_features = model.feature_names_in_ if hasattr(model, 'feature_names_in_') else list(feature_df.columns)
+        # Reindex to match model's features, fill missing with 0
+        X = feature_df.reindex(columns=expected_features, fill_value=0)
         # Predict
         prediction = model.predict(X)[0]
         proba = model.predict_proba(X)[0]
