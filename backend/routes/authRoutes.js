@@ -7,6 +7,8 @@ import {
   getMe,
   resendVerification,
   resendOTP,
+  updateProfile,
+  getProfile,
 } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -19,5 +21,9 @@ router.get("/verify/:token", verifyEmail);
 router.post("/login", login);
 router.get("/me", protect, getMe);
 router.post("/resend-verification", resendVerification);
+
+// Profile routes
+router.get("/profile", protect, getProfile);
+router.patch("/profile", protect, updateProfile);
 
 export default router;

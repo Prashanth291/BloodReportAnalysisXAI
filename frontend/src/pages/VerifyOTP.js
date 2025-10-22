@@ -6,7 +6,7 @@ import LoadingScreen from "../components/LoadingScreen";
 const VerifyOTP = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { verifyEmail, resendVerification } = useContext(AuthContext);
+  const { resendVerification } = useContext(AuthContext);
 
   const email = location.state?.email || "";
 
@@ -115,15 +115,25 @@ const VerifyOTP = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="bg-primary-600 p-4 rounded-xl shadow-lg">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <svg
+                className="w-10 h-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
               </svg>
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Verify Your Email</h2>
-          <p className="mt-2 text-gray-600">
-            Enter the 6-digit code sent to
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900">
+            Verify Your Email
+          </h2>
+          <p className="mt-2 text-gray-600">Enter the 6-digit code sent to</p>
           <p className="mt-1 font-semibold text-primary-600">{email}</p>
         </div>
 
@@ -170,7 +180,9 @@ const VerifyOTP = () => {
 
           {/* Resend OTP */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm mb-2">Didn't receive the code?</p>
+            <p className="text-gray-600 text-sm mb-2">
+              Didn't receive the code?
+            </p>
             <button
               onClick={handleResend}
               disabled={resending}
@@ -183,8 +195,16 @@ const VerifyOTP = () => {
           {/* Tips */}
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-start">
-              <svg className="w-5 h-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              <svg
+                className="w-5 h-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
               </svg>
               <div className="text-sm text-blue-700">
                 <p className="font-semibold mb-1">Tips:</p>

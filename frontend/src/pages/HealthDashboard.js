@@ -7,7 +7,6 @@ import CategoryAnalysis from "../components/CategoryAnalysis";
 
 const HealthDashboard = () => {
   const [loading, setLoading] = useState(true);
-  const [reports, setReports] = useState([]);
   const [latestReport, setLatestReport] = useState(null);
   const [previousReport, setPreviousReport] = useState(null);
   const [error, setError] = useState("");
@@ -35,7 +34,6 @@ const HealthDashboard = () => {
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
 
-      setReports(sortedReports);
       setLatestReport(sortedReports[0] || null);
       setPreviousReport(sortedReports[1] || null);
     } catch (err) {

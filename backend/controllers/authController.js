@@ -458,3 +458,68 @@ export const resendVerification = async (req, res) => {
     });
   }
 };
+
+// @desc    Get user profile
+// @route   GET /api/auth/profile
+// @access  Private
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+// @desc    Update user profile
+// @route   PATCH /api/auth/profile
+// @access  Private
+export const updateProfile = async (req, res) => {
+  try {
+    const { profile } = req.body;
+
+    if (!profile) {
+      return res.status(400).json({
+        success: false,
+        message: "Profile data is required",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update profile fields
+    user.profile = {
+      ...user.profile,
+      ...profile,
+    };
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};

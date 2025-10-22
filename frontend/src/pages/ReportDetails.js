@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getReportById, deleteReport } from "../services/analysisService";
 import LoadingScreen from "../components/LoadingScreen";
+import DocusParameterCard from "../components/DocusParameterCard";
 
 const ReportDetails = () => {
   const { id } = useParams();
@@ -10,11 +11,7 @@ const ReportDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchReport();
-  }, [id]);
-
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     try {
       const response = await getReportById(id);
       setReport(response.data);
@@ -23,7 +20,11 @@ const ReportDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this report?")) {
@@ -372,73 +373,10 @@ const ReportDetails = () => {
 
           {report.extractedData?.parameters &&
           report.extractedData.parameters.length > 0 ? (
-            <div className="space-y-4">
-              {report.extractedData.parameters.map((param, index) => {
-                const colors = getStatusColor(param.status);
-                return (
-                  <div
-                    key={index}
-                    className="group bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border-2 border-gray-200 hover:border-primary-300 hover:shadow-lg transition-all duration-300"
-                  >
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center">
-                          {param.name}
-                          {getStatusIcon(param.status)}
-                        </h3>
-                        <div className="flex flex-wrap gap-4 text-sm">
-                          <div className="flex items-center space-x-2">
-                            <svg
-                              className="w-4 h-4 text-primary-600"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-                              />
-                            </svg>
-                            <span className="text-gray-600">Value:</span>
-                            <span className="font-bold text-gray-900">
-                              {param.value} {param.unit}
-                            </span>
-                          </div>
-                          {param.referenceRange && (
-                            <div className="flex items-center space-x-2">
-                              <svg
-                                className="w-4 h-4 text-primary-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                                />
-                              </svg>
-                              <span className="text-gray-600">Normal:</span>
-                              <span className="font-semibold text-gray-700">
-                                {param.referenceRange}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div
-                        className={`inline-flex items-center space-x-2 px-6 py-3 rounded-xl border-2 ${colors.bg} ${colors.text} ${colors.border} font-bold`}
-                      >
-                        {getStatusIcon(param.status)}
-                        <span>{param.status || "Unknown"}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="grid gap-6">
+              {report.extractedData.parameters.map((param, index) => (
+                <DocusParameterCard key={index} parameter={param} />
+              ))}
             </div>
           ) : (
             <div className="text-center py-12">

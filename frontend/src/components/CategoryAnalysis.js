@@ -4,7 +4,6 @@ const CategoryAnalysis = ({ category, parameters }) => {
   const getCategoryHealth = () => {
     const total = parameters.length;
     const normal = parameters.filter((p) => p.status === "normal").length;
-    const abnormal = total - normal;
 
     const percentage = (normal / total) * 100;
 
@@ -56,6 +55,9 @@ const CategoryAnalysis = ({ category, parameters }) => {
   const highCount = parameters.filter((p) => p.status === "high").length;
   const lowCount = parameters.filter((p) => p.status === "low").length;
   const percentage = (normalCount / parameters.length) * 100;
+
+  // Used for displaying abnormal count
+  const totalAbnormal = highCount + lowCount;
 
   return (
     <div
@@ -116,7 +118,7 @@ const CategoryAnalysis = ({ category, parameters }) => {
       </div>
 
       {/* Abnormal Parameters List */}
-      {(highCount > 0 || lowCount > 0) && (
+      {totalAbnormal > 0 && (
         <div className="border-t border-gray-200 pt-4">
           <p className="text-sm font-medium text-gray-700 mb-2">
             Abnormal Values:

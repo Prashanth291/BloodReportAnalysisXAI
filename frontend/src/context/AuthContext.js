@@ -8,6 +8,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+  // Load user data
+  const loadUser = React.useCallback(async () => {
+    try {
+      const response = await axios.get("/api/auth/me");
+      setUser(response.data.data);
+    } catch (error) {
+      console.error("Failed to load user:", error);
+      localStorage.removeItem("token");
+      setToken(null);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   // Set axios default header
   useEffect(() => {
     if (token) {
@@ -16,20 +31,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
-  }, [token]);
-
-  // Load user data
-  const loadUser = async () => {
-    try {
-      const response = await axios.get("/api/auth/me");
-      setUser(response.data.data);
-    } catch (error) {
-      console.error("Failed to load user:", error);
-      logout();
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [token, loadUser]);
 
   // Register user
   const register = async (userData) => {

@@ -26,17 +26,7 @@ const ParameterTrends = () => {
   const [chartData, setChartData] = useState([]);
   const [parameterInfo, setParameterInfo] = useState(null);
 
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  useEffect(() => {
-    if (selectedParameter && reports.length > 0) {
-      prepareChartData();
-    }
-  }, [selectedParameter, reports]);
-
-  const fetchReports = async () => {
+  const fetchReports = React.useCallback(async () => {
     try {
       const response = await getUserReports();
 
@@ -77,9 +67,9 @@ const ParameterTrends = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const prepareChartData = () => {
+  const prepareChartData = React.useCallback(() => {
     const data = [];
     let refRange = null;
     let unit = "";
@@ -121,7 +111,17 @@ const ParameterTrends = () => {
       referenceRange: refRange,
       dataPoints: data.length,
     });
-  };
+  }, [selectedParameter, reports]);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
+  useEffect(() => {
+    if (selectedParameter && reports.length > 0) {
+      prepareChartData();
+    }
+  }, [selectedParameter, reports, prepareChartData]);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
