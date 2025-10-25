@@ -73,6 +73,27 @@ export const uploadReport = async (req, res) => {
 };
 
 // Helper function to process and structure parameters
+const normalizeParameterName = (name) => {
+  if (!name) return "Unknown";
+  const n = name.trim().toLowerCase();
+  // CBC (match model filenames exactly)
+  if (n.includes("hemoglobin") || n === "hb" || n === "hgb") return "hemoglobin";
+  if (n.includes("wbc")) return "wbc";
+  if (n.includes("rbc")) return "rbc";
+  if (n.includes("platelet")) return "platelet";
+  if (n.includes("lymphocyte")) return "lymphocyte";
+  if (n.includes("neutrophil")) return "neutrophil";
+  if (n.includes("eosinophil")) return "eosinophil";
+  if (n.includes("monocyte")) return "monocyte";
+  if (n.includes("basophil")) return "basophil";
+  if (n.includes("pcv") || n.includes("hematocrit")) return "pcv";
+  if (n.includes("mcv")) return "mcv";
+  if (n.includes("mchc")) return "mchc";
+  if (n.includes("mch")) return "mch";
+  // Add more mappings as needed
+  return n;
+};
+
 const processParameters = (extractedData) => {
   const parameters = [];
 
@@ -81,13 +102,15 @@ const processParameters = (extractedData) => {
   }
 
   extractedData.parameters.forEach((param) => {
+    const normalizedName = normalizeParameterName(param.name);
     const processedParam = {
-      name: param.name || "Unknown",
+      name: normalizedName,
       value: param.value || "N/A",
       unit: param.unit || "",
       referenceRange: {},
       status: param.status?.toLowerCase() || "unknown",
-      category: categorizeParameter(param.name),
+      category: categorizeParameter(normalizedName),
+      originalName: param.name || "Unknown", // for traceability
     };
 
     // Process reference range

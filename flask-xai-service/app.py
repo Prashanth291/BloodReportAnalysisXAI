@@ -42,12 +42,35 @@ LOADED_MODELS = {}
 
 def get_model(parameter_name):
     """Load and cache models."""
-    if parameter_name not in LOADED_MODELS:
-        model_path = MODELS_DIR / f"{parameter_name}_model.joblib"
+    # Map parameter aliases to model filenames
+    PARAMETER_MODEL_MAP = {
+        'hemoglobin': 'hemoglobin',
+        'wbc': 'wbc',
+        'platelet': 'platelet',
+        'neutrophil': 'neutrophil',
+        'neutrophils': 'neutrophil',
+        'lymphocyte': 'lymphocyte',
+        'lymphocytes': 'lymphocyte',
+        'rdw': 'rdw',
+        'monocyte': 'monocyte',
+        'monocytes': 'monocyte',
+        'eosinophil': 'eosinophil',
+        'eosinophils': 'eosinophil',
+        'basophil': 'basophil',
+        'basophils': 'basophil',
+        'rbc': 'rbc',
+        'mcv': 'mcv',
+        'mch': 'mch',
+        'mchc': 'mchc',
+    }
+    key = parameter_name.lower() if parameter_name else ''
+    model_key = PARAMETER_MODEL_MAP.get(key, key)
+    if model_key not in LOADED_MODELS:
+        model_path = MODELS_DIR / f"{model_key}_model.joblib"
         if not model_path.exists():
             return None
-        LOADED_MODELS[parameter_name] = joblib.load(model_path)
-    return LOADED_MODELS[parameter_name]
+        LOADED_MODELS[model_key] = joblib.load(model_path)
+    return LOADED_MODELS[model_key]
 
 def preprocess_input(data):
     """Convert API input to model features."""
@@ -151,16 +174,43 @@ def interpret():
         return jsonify(cached)
     try:
         data = payload
-        parameter = data.get('parameter', 'hemoglobin')
+        print("==============================================================")
+        logging.info(f"Raw data received from frontend: {data}")
+        print("==============================================================")
+
+        # Use parameter name from request, fallback to 'hemoglobin' only if missing or empty
+        # Robustly extract parameter, fallback to 'hemoglobin' if missing or empty
+        parameter = None
+        for key in ['parameter', 'parameter_name', 'parameterName']:
+            value = data.get(key)
+            if value is not None and str(value).strip() != '':
+                parameter = value
+                break
+        if not parameter:
+            logging.warning("No parameter provided, defaulting to 'hemoglobin'")
+            parameter = 'hemoglobin'
         value = data.get('value', 0)
-        logging.info(f"Interpret request for {parameter} (value={value})")
+        print("==============================================================")
+        logging.info(f"Received parameter: '{parameter}', value: {value}")
+        print("==============================================================")
+        print("==============================================================")
+        logging.info(f"Interpret request for parameter='{parameter}' (value={value}) | payload keys: {list(data.keys())}")
+        print("==============================================================")
+        if parameter == 'hemoglobin':
+            logging.warning("Parameter defaulted to 'hemoglobin'. Check if frontend is sending the correct parameter name.")
         # Load model
         model = get_model(parameter)
         if model is None:
             logging.error(f"Model for parameter '{parameter}' not found")
             return jsonify({"error": f"Model for parameter '{parameter}' not found"}), 404
+        print("==============================================================")
+        logging.info(f"Model loaded for: '{parameter}'")
+        print("==============================================================")
         # Preprocess input
         features_dict = preprocess_input(data)
+        print("==============================================================")
+        logging.info(f"Features sent for analysis: {features_dict}")
+        print("==============================================================")
         # Convert to DataFrame matching training features
         feature_df = pd.DataFrame([features_dict])
         # Align DataFrame columns to model's expected features
@@ -174,6 +224,9 @@ def interpret():
         prediction = model.predict(X)[0]
         proba = model.predict_proba(X)[0]
         confidence = float(proba[prediction])
+        print("==============================================================")
+        logging.info(f"Prediction class: {prediction}, Confidence: {confidence}")
+        print("==============================================================")
         # Compute SHAP values (create explainer on-the-fly)
         try:
             explainer = shap.Explainer(model, X[:1])
@@ -208,6 +261,9 @@ def interpret():
         # Add SHAP values and feature names for frontend visualization
         interpretation["shap_values"] = shap_vals
         interpretation["feature_names"] = feature_names
+        print("==============================================================")
+        logging.info(f"Output returned from XAI: {interpretation}")
+        print("==============================================================")
         set_cached_interpretation(payload, interpretation)
         return jsonify(interpretation)
     except Exception as e:
