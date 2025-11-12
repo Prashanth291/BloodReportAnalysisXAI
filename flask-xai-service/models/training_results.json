@@ -1,96 +1,163 @@
-[
-  {
-    "parameter": "hemoglobin_status",
-    "train_accuracy": 1.0,
-    "test_accuracy": 0.9983364755461905,
-    "train_f1": 1.0,
-    "test_f1": 0.9983291524924092,
-    "n_features": 28,
-    "n_train_samples": 36065,
-    "n_test_samples": 9017,
-    "classes": [
-      0,
-      1,
-      2
-    ]
-  },
-  {
-    "parameter": "wbc_status",
-    "train_accuracy": 1.0,
-    "test_accuracy": 0.9984473771764445,
-    "train_f1": 1.0,
-    "test_f1": 0.9984491705762903,
-    "n_features": 28,
-    "n_train_samples": 36065,
-    "n_test_samples": 9017,
-    "classes": [
-      0,
-      1,
-      2,
-      3
-    ]
-  },
-  {
-    "parameter": "platelet_status",
-    "train_accuracy": 1.0,
-    "test_accuracy": 0.9960075413108572,
-    "train_f1": 1.0,
-    "test_f1": 0.9960014181693376,
-    "n_features": 28,
-    "n_train_samples": 36065,
-    "n_test_samples": 9017,
-    "classes": [
-      0,
-      1,
-      2,
-      3
-    ]
-  },
-  {
-    "parameter": "neutrophil_status",
-    "train_accuracy": 0.99997227228615,
-    "test_accuracy": 0.9960075413108572,
-    "train_f1": 0.9999722645497141,
-    "test_f1": 0.99600646203862,
-    "n_features": 28,
-    "n_train_samples": 36065,
-    "n_test_samples": 9017,
-    "classes": [
-      0,
-      1,
-      2,
-      3
-    ]
-  },
-  {
-    "parameter": "lymphocyte_status",
-    "train_accuracy": 1.0,
-    "test_accuracy": 0.996894754352889,
-    "train_f1": 1.0,
-    "test_f1": 0.9967841466400453,
-    "n_features": 28,
-    "n_train_samples": 36065,
-    "n_test_samples": 9017,
-    "classes": [
-      0,
-      1,
-      2,
-      3
-    ]
-  },
-  {
-    "parameter": "rdw_status",
-    "train_accuracy": 1.0,
-    "test_accuracy": 0.9980037706554287,
-    "train_f1": 1.0,
-    "test_f1": 0.99800513100452,
-    "n_features": 28,
-    "n_train_samples": 36065,
-    "n_test_samples": 9017,
-    "classes": [
-      0,
-      1,
-      2
-    ]
-  }
-]
+{
+  "timestamp": "2025-11-12T18:02:57.761300",
+  "dataset": "D:\\Projects\\BloodReportAnalysisXAI\\flask-xai-service\\data\\processed_cbc_training_complete.csv",
+  "total_samples": 50000,
+  "results": [
+    {
+      "parameter": "hemoglobin",
+      "feature": "hemoglobin_g_dL",
+      "status": "hemoglobin_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 3,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "wbc",
+      "feature": "wbc_10e9_L",
+      "status": "wbc_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 2,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "platelet",
+      "feature": "platelet_count",
+      "status": "platelet_status",
+      "train_acc": 1.0,
+      "test_acc": 0.9962,
+      "train_f1": 1.0,
+      "test_f1": 0.9961978581779111,
+      "n_features": 31,
+      "n_classes": 4,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "rdw",
+      "feature": "rdw_percent",
+      "status": "rdw_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 3,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "neutrophil",
+      "feature": "neutrophils_percent",
+      "status": "neutrophil_status",
+      "train_acc": 1.0,
+      "test_acc": 0.9999,
+      "train_f1": 1.0,
+      "test_f1": 0.9998984875215668,
+      "n_features": 31,
+      "n_classes": 3,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "lymphocyte",
+      "feature": "lymphocytes_percent",
+      "status": "lymphocyte_status",
+      "train_acc": 1.0,
+      "test_acc": 0.999,
+      "train_f1": 1.0,
+      "test_f1": 0.9990186953473765,
+      "n_features": 31,
+      "n_classes": 3,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "rbc",
+      "feature": "rbc_count",
+      "status": "rbc_status",
+      "train_acc": 0.999925,
+      "test_acc": 0.9998,
+      "train_f1": 0.9999249922833893,
+      "test_f1": 0.9997999820646517,
+      "n_features": 31,
+      "n_classes": 3,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "mcv",
+      "feature": "mcv_fL",
+      "status": "mcv_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 2,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "mch",
+      "feature": "mch_pg",
+      "status": "mch_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 3,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "mchc",
+      "feature": "mchc_g_dL",
+      "status": "mchc_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 2,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "eosinophil",
+      "feature": "eosinophils_percent",
+      "status": "eosinophils_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 2,
+      "train_samples": 40000,
+      "test_samples": 10000
+    },
+    {
+      "parameter": "basophil",
+      "feature": "basophils_percent",
+      "status": "basophils_status",
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "train_f1": 1.0,
+      "test_f1": 1.0,
+      "n_features": 31,
+      "n_classes": 2,
+      "train_samples": 40000,
+      "test_samples": 10000
+    }
+  ]
+}

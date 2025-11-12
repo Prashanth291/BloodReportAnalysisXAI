@@ -9,10 +9,12 @@ import joblib
 import numpy as np
 import pandas as pd
 from pathlib import Path
+import os
 import shap
 import functools
 import hashlib
 import logging
+import traceback
 
 # MongoDB cache for XAI results
 from mongo_cache import get_cached_interpretation, set_cached_interpretation
@@ -33,7 +35,8 @@ RESPONSE_CACHE = {}
 CACHE_TTL_SECONDS = 300  # 5 minutes
 
 # Basic auth token (set this securely in production)
-DEV_AUTH_TOKEN = "dev-secret-token"
+# Use environment variable if provided, fallback to dev-secret-token
+DEV_AUTH_TOKEN = os.environ.get('DEV_AUTH_TOKEN', "dev-secret-token")
 
 MODELS_DIR = Path(__file__).parent / "models"
 
@@ -71,6 +74,51 @@ def get_model(parameter_name):
             return None
         LOADED_MODELS[model_key] = joblib.load(model_path)
     return LOADED_MODELS[model_key]
+
+
+def normalize_parameter_name(param):
+    """Normalize a human-readable parameter name to a model key.
+    Attempts to map common frontend labels like 'Hemoglobin (Hb)',
+    'Platelet Count', 'Total WBC count' to internal model keys.
+    """
+    if not param:
+        return param
+    s = str(param).lower()
+    # remove parentheses content
+    import re
+    s = re.sub(r"\(.*?\)", "", s)
+    s = re.sub(r"[^a-z0-9 ]", " ", s).strip()
+    # keyword matching
+    if 'hemoglobin' in s or s == 'hb':
+        return 'hemoglobin'
+    if 'wbc' in s or 'white' in s or 'total wbc' in s:
+        return 'wbc'
+    if 'platelet' in s:
+        return 'platelet'
+    if 'neutrophil' in s:
+        return 'neutrophil'
+    if 'lymphocyte' in s:
+        return 'lymphocyte'
+    if 'rdw' in s:
+        return 'rdw'
+    if 'rbc' in s or 'red blood' in s:
+        return 'rbc'
+    if 'neutrophils' in s:
+        return 'neutrophil'
+    if 'lymphocytes' in s:
+        return 'lymphocyte'
+    if 'mcv' in s:
+        return 'mcv'
+    if 'mchc' in s:
+        return 'mchc'
+    if 'mch' in s:
+        return 'mch'
+    # fallback: try exact match to known model files (strip suffixes)
+    for name in LOADED_MODELS.keys():
+        if name in s:
+            return name
+    # as last resort return original lowercased no-space key
+    return s.replace(' ', '_')
 
 def preprocess_input(data):
     """Convert API input to model features."""
@@ -135,10 +183,30 @@ def require_auth(f):
     @functools.wraps(f)
     def decorated(*args, **kwargs):
         auth_header = request.headers.get('Authorization', '')
+        # Developer debug logging (masked) to help troubleshoot auth issues in dev
+        try:
+            if auth_header:
+                # mask token for logs
+                if auth_header.startswith('Bearer '):
+                    _token = auth_header.split(' ', 1)[1]
+                    masked = _token if len(_token) <= 8 else (_token[:4] + '...' + _token[-2:])
+                    logging.info(f"Authorization header received (masked token): {masked} (len={len(_token)})")
+                else:
+                    logging.info(f"Authorization header received (not Bearer): {auth_header}")
+            else:
+                logging.info("No Authorization header received")
+        except Exception:
+            logging.debug("Failed to log Authorization header", exc_info=True)
+
         if not auth_header.startswith('Bearer '):
             return make_response(jsonify({"error": "Missing or invalid Authorization header"}), 401)
-        token = auth_header.split(' ', 1)[1]
+        # Normalize token: strip whitespace and surrounding quotes to handle clients that add them
+        token = auth_header.split(' ', 1)[1].strip()
+        if (token.startswith('"') and token.endswith('"')) or (token.startswith("'") and token.endswith("'")):
+            token = token[1:-1]
+        # Compare normalized token
         if token != DEV_AUTH_TOKEN:
+            logging.warning(f"Authorization failed: invalid token provided (len_received={len(token)}, len_expected={len(DEV_AUTH_TOKEN)})")
             return make_response(jsonify({"error": "Invalid API token"}), 403)
         return f(*args, **kwargs)
     return decorated
@@ -158,7 +226,24 @@ def cache_response(f):
             else:
                 del RESPONSE_CACHE[cache_key]
         response = f(*args, **kwargs)
-        if cache_key:
+        # Determine HTTP status code for the response to avoid caching errors
+        status_code = None
+        try:
+            if hasattr(response, 'status_code'):
+                status_code = response.status_code
+            elif isinstance(response, tuple):
+                # (body, status) or (body, status, headers)
+                if len(response) > 1 and isinstance(response[1], int):
+                    status_code = response[1]
+                else:
+                    status_code = 200
+            else:
+                status_code = 200
+        except Exception:
+            status_code = None
+
+        # Only cache successful (200) responses to avoid persisting error states
+        if cache_key and status_code == 200:
             RESPONSE_CACHE[cache_key] = {'response': response, 'time': pd.Timestamp.now()}
         return response
     return decorated
@@ -198,13 +283,16 @@ def interpret():
         print("==============================================================")
         if parameter == 'hemoglobin':
             logging.warning("Parameter defaulted to 'hemoglobin'. Check if frontend is sending the correct parameter name.")
+        # Normalize parameter name from frontend labels to model keys
+        normalized_param = normalize_parameter_name(parameter)
+        logging.info(f"Normalized parameter name: '{parameter}' -> '{normalized_param}'")
         # Load model
-        model = get_model(parameter)
+        model = get_model(normalized_param)
         if model is None:
-            logging.error(f"Model for parameter '{parameter}' not found")
-            return jsonify({"error": f"Model for parameter '{parameter}' not found"}), 404
+            logging.error(f"Model for parameter '{normalized_param}' not found (original: '{parameter}')")
+            return jsonify({"error": f"Model for parameter '{normalized_param}' not found", "original_parameter": parameter}), 404
         print("==============================================================")
-        logging.info(f"Model loaded for: '{parameter}'")
+        logging.info(f"Model loaded for: '{normalized_param}' (original: '{parameter}')")
         print("==============================================================")
         # Preprocess input
         features_dict = preprocess_input(data)
@@ -229,14 +317,119 @@ def interpret():
         print("==============================================================")
         # Compute SHAP values (create explainer on-the-fly)
         try:
-            explainer = shap.Explainer(model, X[:1])
-            shap_values = explainer(X)
+            # Prefer TreeExplainer for tree-based models (XGBoost, RandomForest, etc.)
+            explainer = None
+            explainer_type = None
+            shap_error = None
+            try:
+                from xgboost import XGBClassifier, XGBRegressor
+                is_tree = isinstance(model, (XGBClassifier, XGBRegressor))
+            except ImportError:
+                is_tree = False
+            # Also check for scikit-learn RandomForest, ExtraTrees, etc.
+            if not is_tree:
+                from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, ExtraTreesClassifier, ExtraTreesRegressor
+                is_tree = isinstance(model, (RandomForestClassifier, RandomForestRegressor, ExtraTreesClassifier, ExtraTreesRegressor))
+            # Try multiple explainer strategies to maximize compatibility with different model wrappers
+            shap_values = None
+            shap_error = None
+            explainer = None
+            explainer_type = None
+            attempts = []
+            try:
+                # prefer TreeExplainer on the model object
+                if is_tree:
+                    attempts.append(('TreeExplainer_model', lambda: shap.TreeExplainer(model)))
+                # try using underlying booster if available (XGBoost)
+                if hasattr(model, 'get_booster'):
+                    attempts.append(('TreeExplainer_booster', lambda: shap.TreeExplainer(model.get_booster())))
+                # generic explainer using model object
+                attempts.append(('GenericExplainer', lambda: shap.Explainer(model, X[:1])))
+                # explainer using predict_proba if available
+                if hasattr(model, 'predict_proba'):
+                    attempts.append(('PredictProbaExplainer', lambda: shap.Explainer(lambda d: model.predict_proba(d), X[:1])))
+                # kernel explainer as last resort (slow)
+                attempts.append(('KernelExplainer', lambda: shap.KernelExplainer((lambda d: model.predict_proba(d) if hasattr(model, 'predict_proba') else model.predict(d)), X[:min(len(X), max(1, int(len(X))))])) )
+            except Exception as e:
+                logging.warning(f"Error preparing SHAP explainer attempts: {e}")
+
+            for name, ctor in attempts:
+                try:
+                    logging.info(f"Attempting SHAP explainer: {name}")
+                    explainer_candidate = ctor()
+                    # compute shap values
+                    cand_vals = None
+                    try:
+                        cand_vals = explainer_candidate(X)
+                    except Exception as e:
+                        logging.warning(f"Explainer {name} failed to compute SHAP: {e}")
+                        logging.debug(traceback.format_exc())
+                        continue
+                    vals = getattr(cand_vals, 'values', None)
+                    if vals is None:
+                        logging.info(f"Explainer {name} returned no values")
+                        continue
+                    import numpy as np
+                    vals_np = np.array(vals)
+                    logging.info(f"Explainer {name} returned SHAP values shape: {vals_np.shape}")
+                    # accept this explainer if it produced a non-empty values array
+                    if vals_np.size > 0:
+                        explainer = explainer_candidate
+                        explainer_type = name
+                        shap_values = cand_vals
+                        break
+                except Exception as e:
+                    logging.warning(f"SHAP attempt {name} raised: {e}")
+                    logging.debug(traceback.format_exc())
+
+            if explainer is None or shap_values is None:
+                shap_error = "All SHAP explainer attempts failed or returned no values"
+                logging.warning(shap_error)
+
             feature_importances = []
             shap_vals = None
             feature_names = list(X.columns)
-            if hasattr(shap_values, 'values') and len(shap_values.values.shape) > 1:
-                class_shap = shap_values.values[0, :, prediction]
+
+            # Normalize shap values to a 1-D array for the sample and predicted class
+            try:
+                vals = getattr(shap_values, 'values', None)
+                if vals is None:
+                    raise ValueError('shap_values has no attribute "values"')
+                vals = np.array(vals)
+                n_feat = len(feature_names)
+                
+                # Debug: log the shape we received
+                logging.info(f"SHAP raw shape: {vals.shape}, n_features expected: {n_feat}, prediction class: {prediction}")
+
+                # Handle different possible SHAP shapes robustly
+                if vals.ndim == 1:
+                    class_shap = vals
+                elif vals.ndim == 2:
+                    if vals.shape[1] == n_feat:
+                        class_shap = vals[0]
+                    elif vals.shape[0] == n_feat:
+                        class_shap = vals[:, 0]
+                    else:
+                        raise ValueError(f'Unexpected 2D SHAP shape: {vals.shape}')
+                elif vals.ndim == 3:
+                    # Shape is (n_samples, n_features, n_classes) or (n_samples, n_classes, n_features)
+                    if vals.shape[2] == n_feat:
+                        # Shape: (1, n_classes, n_features) - extract features for predicted class
+                        class_shap = vals[0, prediction, :]
+                    elif vals.shape[1] == n_feat:
+                        # Shape: (1, n_features, n_classes) - extract features for predicted class
+                        class_shap = vals[0, :, prediction]
+                    else:
+                        raise ValueError(f'Unexpected 3D SHAP shape: {vals.shape}')
+                else:
+                    raise ValueError(f'Unsupported SHAP values ndim: {vals.ndim}')
+
                 shap_vals = class_shap.tolist()
+                
+                # Debug: log raw SHAP values
+                logging.info(f"Raw SHAP values (first 10): {class_shap[:10]}")
+                logging.info(f"SHAP value range: min={class_shap.min():.6f}, max={class_shap.max():.6f}")
+                
                 for fname, impact in zip(feature_names, class_shap):
                     if abs(impact) > 0.01:
                         feature_importances.append({
@@ -244,12 +437,32 @@ def interpret():
                             "impact": float(impact),
                             "direction": "increases" if impact > 0 else "decreases"
                         })
-            feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
+                feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
+                logging.info(f"Feature importances found: {len(feature_importances)} (after filtering > 0.01)")
+                
+                # Fallback: if SHAP returns all zeros, use model's feature importances
+                if len(feature_importances) == 0 and hasattr(model, 'feature_importances_'):
+                    logging.info("SHAP returned all zeros, falling back to model feature importances")
+                    model_importances = model.feature_importances_
+                    for fname, importance in zip(feature_names, model_importances):
+                        if importance > 0.01:
+                            feature_importances.append({
+                                "feature": fname,
+                                "impact": float(importance),
+                                "direction": "importance"  # Model importances don't have direction
+                            })
+                    feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
+                    logging.info(f"Using {len(feature_importances)} model-based feature importances")
+            except Exception as inner_e:
+                shap_error = f"SHAP parse error: {inner_e}\n{traceback.format_exc()}"
+                logging.warning(shap_error)
         except Exception as e:
             logging.warning(f"SHAP computation failed: {e}")
             feature_importances = []
             shap_vals = None
             feature_names = list(X.columns)
+            # Capture traceback for easier dev debugging (returned in response only in dev)
+            shap_error = f"{str(e)}\n{traceback.format_exc()}"
         # Generate medical text
         interpretation = generate_interpretation(
             parameter_name=parameter,
@@ -261,6 +474,8 @@ def interpret():
         # Add SHAP values and feature names for frontend visualization
         interpretation["shap_values"] = shap_vals
         interpretation["feature_names"] = feature_names
+        # Developer debug: include shap error details when computation failed (may be None)
+        interpretation["shap_error"] = shap_error
         print("==============================================================")
         logging.info(f"Output returned from XAI: {interpretation}")
         print("==============================================================")

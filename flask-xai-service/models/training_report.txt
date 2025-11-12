@@ -4,30 +4,60 @@ TRAINING SUMMARY
 
 Parameter: hemoglobin_status
   Train Acc: 1.0000, F1: 1.0000
-  Test Acc: 0.9983, F1: 0.9983
-  Features: 28, Classes: [0, 1, 2]
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1, 2]
 
 Parameter: wbc_status
   Train Acc: 1.0000, F1: 1.0000
-  Test Acc: 0.9984, F1: 0.9984
-  Features: 28, Classes: [0, 1, 2, 3]
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1]
 
 Parameter: platelet_status
   Train Acc: 1.0000, F1: 1.0000
-  Test Acc: 0.9960, F1: 0.9960
-  Features: 28, Classes: [0, 1, 2, 3]
-
-Parameter: neutrophil_status
-  Train Acc: 1.0000, F1: 1.0000
-  Test Acc: 0.9960, F1: 0.9960
-  Features: 28, Classes: [0, 1, 2, 3]
-
-Parameter: lymphocyte_status
-  Train Acc: 1.0000, F1: 1.0000
-  Test Acc: 0.9969, F1: 0.9968
-  Features: 28, Classes: [0, 1, 2, 3]
+  Test Acc: 0.9962, F1: 0.9962
+  Features: 31, Classes: [0, 1, 2, 3]
 
 Parameter: rdw_status
   Train Acc: 1.0000, F1: 1.0000
-  Test Acc: 0.9980, F1: 0.9980
-  Features: 28, Classes: [0, 1, 2]
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1, 2]
+
+Parameter: neutrophil_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9999, F1: 0.9999
+  Features: 31, Classes: [0, 1, 2]
+
+Parameter: lymphocyte_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 0.9990, F1: 0.9990
+  Features: 31, Classes: [0, 1, 2]
+
+Parameter: rbc_status
+  Train Acc: 0.9999, F1: 0.9999
+  Test Acc: 0.9998, F1: 0.9998
+  Features: 31, Classes: [0, 1, 2]
+
+Parameter: mcv_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1]
+
+Parameter: mch_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1, 2]
+
+Parameter: mchc_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1]
+
+Parameter: eosinophils_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1]
+
+Parameter: basophils_status
+  Train Acc: 1.0000, F1: 1.0000
+  Test Acc: 1.0000, F1: 1.0000
+  Features: 31, Classes: [0, 1]

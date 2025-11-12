@@ -6,3 +6,5 @@ xgboost
 shap
 joblib
 pymongo
+flask-cors
+python-dotenv

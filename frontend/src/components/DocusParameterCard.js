@@ -78,6 +78,10 @@ const DocusParameterCard = ({ parameter }) => {
     })
       .then((data) => {
         if (isMounted) {
+          // mark source as XAI
+          try {
+            data.source = data.source || 'xai';
+          } catch (e) {}
           setInterpretation(data);
           cache[cacheKey] = data;
         }
@@ -92,6 +96,10 @@ const DocusParameterCard = ({ parameter }) => {
             parameter.value,
             parameter.referenceRange
           );
+          // mark source as local so UI can indicate fallback
+          try {
+            localInterp.source = 'local';
+          } catch (e) {}
           setInterpretation(localInterp);
         }
       })
@@ -162,6 +170,14 @@ const DocusParameterCard = ({ parameter }) => {
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               {parameter.name}
             </h3>
+            {/* Source badge - shows if interpretation came from XAI or local fallback */}
+            {interpretation && interpretation.source && (
+              <div className="mt-1">
+                <span className="text-xs inline-flex items-center px-2 py-1 rounded-full bg-gray-100 text-gray-800">
+                  {interpretation.source === 'xai' ? 'XAI interpretation' : 'Local interpretation (fallback)'}
+                </span>
+              </div>
+            )}
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-500">Status:</span>
               <span
@@ -189,7 +205,6 @@ const DocusParameterCard = ({ parameter }) => {
             </div>
           </div>
         </div>
-
         {/* Normal Range */}
         <div className="mb-4">
           <div className="flex items-center justify-between text-sm mb-2">
