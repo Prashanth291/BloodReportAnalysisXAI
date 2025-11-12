@@ -40,6 +40,9 @@ app.get("/", (req, res) => {
   });
 });
 
+// Ignore favicon requests (browser automatically requests this)
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 app.use("/api/auth", authRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api/parameters", parameterRoutes);

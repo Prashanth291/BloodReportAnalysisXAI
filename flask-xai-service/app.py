@@ -146,12 +146,16 @@ def preprocess_input(data):
     features['age_senior'] = 1 if 50 <= age < 65 else 0
     features['age_elderly'] = 1 if age >= 65 else 0
     
-    # Other parameters from request
+    # Get otherParameters dict from request (sent by frontend)
+    other_params = data.get('otherParameters', {})
+    
+    # Other parameters - try otherParameters first, then fall back to top-level data
     for param in ['hemoglobin_g_dL', 'wbc_10e9_L', 'platelet_count', 'rdw_percent',
                   'neutrophils_percent', 'lymphocytes_percent', 'monocytes_percent',
                   'eosinophils_percent', 'basophils_percent', 'rbc_count', 'mcv_fL',
                   'mch_pg', 'mchc_g_dL', 'neutrophils_abs', 'lymphocytes_abs', 'monocytes_abs']:
-        features[param] = data.get('otherParameters', {}).get(param, 0)
+        # Try otherParameters first, then top-level data, then default to 0
+        features[param] = other_params.get(param, data.get(param, 0))
     
     # Z-scores (simplified - could be computed from population stats)
     features['hemoglobin_g_dL_zscore'] = 0

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getParameterInterpretation } from "../utils/parameterInterpretations";
 import { getXAIInterpretation } from "../services/xaiService";
 
-const DocusParameterCard = ({ parameter }) => {
+const DocusParameterCard = ({ parameter, allParameters = [], patientProfile = {} }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("analysis"); // 'analysis' or 'indicators'
   const [interpretation, setInterpretation] = useState(null);
@@ -49,10 +49,50 @@ const DocusParameterCard = ({ parameter }) => {
 
   const statusConfig = getStatusConfig(parameter.status);
 
+  // Helper function to convert parameters to Flask format
+  const convertParametersToFlaskFormat = () => {
+    const paramMap = {
+      "Hemoglobin": "hemoglobin_g_dL",
+      "WBC Count": "wbc_10e9_L",
+      "Platelet Count": "platelet_count",
+      "RDW": "rdw_percent",
+      "Neutrophils": "neutrophils_percent",
+      "Lymphocytes": "lymphocytes_percent",
+      "Monocytes": "monocytes_percent",
+      "Eosinophils": "eosinophils_percent",
+      "Basophils": "basophils_percent",
+      "RBC Count": "rbc_count",
+      "MCV": "mcv_fL",
+      "MCH": "mch_pg",
+      "MCHC": "mchc_g_dL",
+    };
+
+    const otherParams = {};
+    allParameters.forEach((param) => {
+      const flaskKey = paramMap[param.name];
+      if (flaskKey && param.value) {
+        // Convert value to number, handling units
+        let numValue = parseFloat(param.value);
+        
+        // Special handling for WBC if given in cells/cu mm (need to convert to 10^9/L)
+        if (flaskKey === "wbc_10e9_L" && numValue > 1000) {
+          numValue = numValue / 1000; // Convert cells/cu mm to 10^9/L
+        }
+        
+        // Special handling for Platelet if given in cells/cu mm (need to convert to 10^9/L for some calculations)
+        // But keep as is since the model was trained with count values
+        
+        otherParams[flaskKey] = numValue;
+      }
+    });
+
+    return otherParams;
+  };
+
   // Caching: Use a simple in-memory cache (could be replaced with localStorage or backend cache)
   const cacheKey = `${parameter.name}|${parameter.status}|${
     parameter.value
-  }|${JSON.stringify(parameter.referenceRange)}`;
+  }|${JSON.stringify(parameter.referenceRange)}|${JSON.stringify(allParameters.map(p => p.value))}`;
   const cache =
     window.__xaiInterpretationCache || (window.__xaiInterpretationCache = {});
 
@@ -72,7 +112,8 @@ const DocusParameterCard = ({ parameter }) => {
       value: parameter.value,
       status: parameter.status,
       referenceRange: parameter.referenceRange,
-      userProfile: {},
+      otherParameters: convertParametersToFlaskFormat(),
+      patientProfile: patientProfile,
       shap: true,
       token: "dev-secret-token",
     })

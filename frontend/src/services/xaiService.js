@@ -11,7 +11,8 @@ export const getXAIInterpretation = async ({
   value,
   status,
   referenceRange,
-  userProfile = {},
+  otherParameters = {},
+  patientProfile = {},
   shap = true,
   token = null,
 }) => {
@@ -20,10 +21,15 @@ export const getXAIInterpretation = async ({
       `${XAI_API_URL}/interpret`,
       {
         parameter_name: parameterName,
+        parameter: parameterName,
         value,
         status,
         reference_range: referenceRange,
-        user_profile: userProfile,
+        otherParameters: otherParameters,
+        patientAge: patientProfile.patientAge || 50,
+        patientGender: patientProfile.patientGender || 'Male',
+        diabetic: patientProfile.diabetic || false,
+        pregnant: patientProfile.pregnant || false,
         shap,
       },
       {

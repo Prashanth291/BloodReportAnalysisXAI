@@ -375,7 +375,17 @@ const ReportDetails = () => {
           report.extractedData.parameters.length > 0 ? (
             <div className="grid gap-6">
               {report.extractedData.parameters.map((param, index) => (
-                <DocusParameterCard key={index} parameter={param} />
+                <DocusParameterCard 
+                  key={index} 
+                  parameter={param} 
+                  allParameters={report.extractedData.parameters}
+                  patientProfile={{
+                    patientAge: report.extractedData?.patientAge || 50,
+                    patientGender: report.extractedData?.patientGender || 'Male',
+                    diabetic: report.extractedData?.diabetic || false,
+                    pregnant: report.extractedData?.pregnant || false,
+                  }}
+                />
               ))}
             </div>
           ) : (
