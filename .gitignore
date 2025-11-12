@@ -89,3 +89,4 @@ dump/
 # Jupyter Notebooks
 .ipynb_checkpoints/
 *.ipynb
+.venv/
