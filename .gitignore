@@ -1,5 +1,10 @@
 # Dependencies
 node_modules/
+flask-xai-service/venv/
+flask-xai-service/__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
 
 # Environment variables
 .env
@@ -12,6 +17,49 @@ node_modules/
 backend/uploads/*
 !backend/uploads/.gitkeep
 
+# Python virtual environment
+venv/
+env/
+ENV/
+
+# Machine Learning Models (Large files - don't push to GitHub)
+flask-xai-service/models/*.joblib
+flask-xai-service/models/*.pkl
+flask-xai-service/models/*.h5
+
+# Large Dataset Files (Don't push to GitHub)
+flask-xai-service/data/processed_cbc_training.csv
+flask-xai-service/data/processed_cbc_training_complete.csv
+flask-xai-service/data/*.csv
+# Keep only small sample files
+!flask-xai-service/data/sample_10_rows.csv
+!flask-xai-service/data/schema.json
+
+# Documentation Summary Files (Your request)
+*_SUMMARY.md
+*_COMPLETE.md
+*_GUIDE.md
+*_DOCUMENTATION.md
+IMPLEMENTATION_SUMMARY.md
+OTP_IMPLEMENTATION_SUMMARY.md
+OTP_VERIFICATION_GUIDE.md
+PARAMETER_SYSTEM_DOCUMENTATION.md
+PHASE_1_COMPLETE.md
+PHASE_2A_COMPLETE.md
+QUICK_START.md
+REDESIGN_COMPLETE.md
+REDESIGN_GUIDE.md
+SETUP_GUIDE.md
+SYSTEM_ARCHITECTURE.md
+COMPILATION_FIXES.md
+DOCUS_UI_IMPLEMENTATION.md
+DYNAMIC_PARAMETERS_GUIDE.md
+
+# Training reports (optional - comment out if you want to keep)
+flask-xai-service/models/training_report.txt
+flask-xai-service/models/training_results.json
+flask-xai-service/models/missing_parameters.txt
+
 # Logs
 *.log
 npm-debug.log*
@@ -21,6 +69,7 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # IDE
 .vscode/
@@ -32,3 +81,11 @@ Thumbs.db
 # Build
 dist/
 build/
+
+# MongoDB dumps
+*.bson
+dump/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
