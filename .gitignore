@@ -35,11 +35,10 @@ flask-xai-service/data/*.csv
 !flask-xai-service/data/sample_10_rows.csv
 !flask-xai-service/data/schema.json
 
-# Documentation Summary Files (Your request)
+# Documentation Summary Files (exclude from repo)
+# Keep: README.md, SETUP_INSTRUCTIONS.md, API_DOCUMENTATION.md
 *_SUMMARY.md
 *_COMPLETE.md
-*_GUIDE.md
-*_DOCUMENTATION.md
 IMPLEMENTATION_SUMMARY.md
 OTP_IMPLEMENTATION_SUMMARY.md
 OTP_VERIFICATION_GUIDE.md
