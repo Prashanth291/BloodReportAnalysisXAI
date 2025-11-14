@@ -59,9 +59,9 @@ app.listen(PORT, async () => {
   // Check if email is configured
   const emailConfigured =
     process.env.SMTP_PASSWORD &&
-    process.env.SMTP_PASSWORD !== "your_app_specific_password" &&
+    process.env.SMTP_PASSWORD !== "wrho tpvc vaiy udsq" &&
     process.env.SMTP_USER &&
-    process.env.SMTP_USER !== "your_email@gmail.com";
+    process.env.SMTP_USER !== "prashanthbollinedi2910@gmail.com";
 
   if (!emailConfigured && process.env.NODE_ENV === "development") {
     console.log("\n⚠️  EMAIL NOT CONFIGURED - Running in DEV mode");

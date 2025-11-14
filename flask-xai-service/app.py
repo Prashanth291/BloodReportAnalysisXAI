@@ -88,8 +88,16 @@ def normalize_parameter_name(param):
     import re
     s = re.sub(r"\(.*?\)", "", s)
     s = re.sub(r"[^a-z0-9 ]", " ", s).strip()
-    # keyword matching
-    if 'hemoglobin' in s or s == 'hb':
+    # keyword matching (handle both American and British spellings)
+    # IMPORTANT: Check most specific patterns first before general ones
+    # MCH and MCHC must be checked BEFORE hemoglobin because they contain "hemoglobin"
+    if 'mean corpuscular haemoglobin concentration' in s or 'mean corpuscular hemoglobin concentration' in s or 'mchc' in s:
+        return 'mchc'
+    if 'mean corpuscular haemoglobin' in s or 'mean corpuscular hemoglobin' in s or 'mch' in s:
+        return 'mch'
+    if 'mean corpuscular volume' in s or 'mcv' in s:
+        return 'mcv'
+    if 'hemoglobin' in s or 'haemoglobin' in s or s == 'hb':
         return 'hemoglobin'
     if 'wbc' in s or 'white' in s or 'total wbc' in s:
         return 'wbc'
@@ -99,20 +107,22 @@ def normalize_parameter_name(param):
         return 'neutrophil'
     if 'lymphocyte' in s:
         return 'lymphocyte'
+    if 'eosinophil' in s:
+        return 'eosinophil'
+    if 'basophil' in s:
+        return 'basophil'
+    if 'monocyte' in s:
+        return 'monocyte'  # Note: no monocyte model exists, will 404
     if 'rdw' in s:
         return 'rdw'
-    if 'rbc' in s or 'red blood' in s:
+    if 'rbc' in s or 'red blood' in s or 'red cell' in s:
         return 'rbc'
+    if 'haematocrit' in s or 'hematocrit' in s or 'pcv' in s:
+        return 'hematocrit'  # Note: no hematocrit model exists, will 404
     if 'neutrophils' in s:
         return 'neutrophil'
     if 'lymphocytes' in s:
         return 'lymphocyte'
-    if 'mcv' in s:
-        return 'mcv'
-    if 'mchc' in s:
-        return 'mchc'
-    if 'mch' in s:
-        return 'mch'
     # fallback: try exact match to known model files (strip suffixes)
     for name in LOADED_MODELS.keys():
         if name in s:
@@ -149,6 +159,13 @@ def preprocess_input(data):
     # Get otherParameters dict from request (sent by frontend)
     other_params = data.get('otherParameters', {})
     
+    # Debug logging
+    print("==============================================================")
+    logging.info(f"otherParameters received: {other_params}")
+    logging.info(f"otherParameters type: {type(other_params)}")
+    logging.info(f"otherParameters keys: {list(other_params.keys()) if isinstance(other_params, dict) else 'Not a dict'}")
+    print("==============================================================")
+    
     # Other parameters - try otherParameters first, then fall back to top-level data
     for param in ['hemoglobin_g_dL', 'wbc_10e9_L', 'platelet_count', 'rdw_percent',
                   'neutrophils_percent', 'lymphocytes_percent', 'monocytes_percent',
@@ -175,6 +192,14 @@ def preprocess_input(data):
     
     features['patientWeight_kg'] = data.get('patientWeight_kg', 70)
     features['neutrophil_lymphocyte_ratio'] = features['nlr']
+    
+    # Debug logging - log final feature values for blood parameters
+    print("==============================================================")
+    logging.info("Final feature values for blood parameters:")
+    for param in ['hemoglobin_g_dL', 'wbc_10e9_L', 'platelet_count', 'rdw_percent',
+                  'neutrophils_percent', 'lymphocytes_percent']:
+        logging.info(f"  {param}: {features.get(param, 'NOT FOUND')}")
+    print("==============================================================")
     
     return features
 

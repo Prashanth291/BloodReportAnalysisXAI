@@ -52,19 +52,45 @@ const DocusParameterCard = ({ parameter, allParameters = [], patientProfile = {}
   // Helper function to convert parameters to Flask format
   const convertParametersToFlaskFormat = () => {
     const paramMap = {
+      // Hemoglobin variants
       "Hemoglobin": "hemoglobin_g_dL",
+      "Haemoglobin": "hemoglobin_g_dL",
+      "Haemoglobin (Hb)": "hemoglobin_g_dL",
+      "Hemoglobin (Hb)": "hemoglobin_g_dL",
+      "Hb": "hemoglobin_g_dL",
+      
+      // WBC variants
       "WBC Count": "wbc_10e9_L",
+      "Total WBC Count": "wbc_10e9_L",
+      "WBC": "wbc_10e9_L",
+      "White Blood Cell Count": "wbc_10e9_L",
+      
+      // Platelet variants
       "Platelet Count": "platelet_count",
+      "Platelets Count": "platelet_count",
+      "Platelets": "platelet_count",
+      
+      // RBC variants
+      "RBC Count": "rbc_count",
+      "Total Red Cell Count (RBC)": "rbc_count",
+      "Red Blood Cell Count": "rbc_count",
+      "RBC": "rbc_count",
+      
+      // Other parameters
       "RDW": "rdw_percent",
       "Neutrophils": "neutrophils_percent",
       "Lymphocytes": "lymphocytes_percent",
       "Monocytes": "monocytes_percent",
       "Eosinophils": "eosinophils_percent",
       "Basophils": "basophils_percent",
-      "RBC Count": "rbc_count",
       "MCV": "mcv_fL",
+      "Mean Corpuscular Volume (MCV)": "mcv_fL",
       "MCH": "mch_pg",
+      "Mean Corpuscular Haemoglobin (MCH)": "mch_pg",
+      "Mean Corpuscular Hemoglobin (MCH)": "mch_pg",
       "MCHC": "mchc_g_dL",
+      "Mean Corpuscular Haemoglobin Concentration (MCHC)": "mchc_g_dL",
+      "Mean Corpuscular Hemoglobin Concentration (MCHC)": "mchc_g_dL",
     };
 
     const otherParams = {};
@@ -74,18 +100,33 @@ const DocusParameterCard = ({ parameter, allParameters = [], patientProfile = {}
         // Convert value to number, handling units
         let numValue = parseFloat(param.value);
         
+        // Skip if NaN
+        if (isNaN(numValue)) {
+          return;
+        }
+        
         // Special handling for WBC if given in cells/cu mm (need to convert to 10^9/L)
         if (flaskKey === "wbc_10e9_L" && numValue > 1000) {
           numValue = numValue / 1000; // Convert cells/cu mm to 10^9/L
         }
         
-        // Special handling for Platelet if given in cells/cu mm (need to convert to 10^9/L for some calculations)
-        // But keep as is since the model was trained with count values
+        // Special handling for Platelet - check if it's in lakhs (Indian format)
+        if (flaskKey === "platelet_count") {
+          // If value is less than 10, it's likely in lakhs (e.g., 3.63 lakh = 363,000)
+          // Convert to thousands: 3.63 lakh = 363 (in thousands)
+          if (numValue < 10) {
+            numValue = numValue * 100; // 3.63 -> 363 (thousands)
+          } else if (numValue > 1000) {
+            // If in absolute count (e.g., 363000), convert to thousands
+            numValue = numValue / 1000;
+          }
+        }
         
         otherParams[flaskKey] = numValue;
       }
     });
 
+    console.log('Converted otherParameters:', otherParams); // Debug log
     return otherParams;
   };
 

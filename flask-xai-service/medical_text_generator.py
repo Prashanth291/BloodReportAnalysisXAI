@@ -20,11 +20,34 @@ Output format matches parameterInterpretations.js structure:
       {"feature": "Age", "impact": 0.3, "direction": "increases"}
     ],
     "shapExplanation": "..."
+  },
+  "riskAssessments": {
+    "cardiovascularRisk": {...},
+    "diabetesRisk": {...},
+    "infectionRisk": {...},
+    "anemiaProfile": {...},
+    "thrombosisRisk": {...},
+    "overallHealthScore": {...}
   }
 }
 """
 import json
 from pathlib import Path
+
+# Import comprehensive templates and clinical rules
+try:
+    from medical_text_templates_comprehensive import COMPREHENSIVE_TEMPLATES, get_template
+    USE_COMPREHENSIVE_TEMPLATES = True
+except ImportError:
+    USE_COMPREHENSIVE_TEMPLATES = False
+    print("Warning: Comprehensive templates not available, using legacy templates")
+
+try:
+    from clinical_rules_fallback import classify_by_threshold, calculate_risk_assessments
+    USE_CLINICAL_FALLBACK = True
+except ImportError:
+    USE_CLINICAL_FALLBACK = False
+    print("Warning: Clinical fallback not available")
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
@@ -600,25 +623,39 @@ TEMPLATES = {
     }
 }
 
-def generate_interpretation(parameter_name, value, prediction_status, confidence=0.9, feature_importances=None):
+def generate_interpretation(parameter_name, value, prediction_status, confidence=0.9, feature_importances=None, patient_data=None):
     """
     Generate full medical interpretation for a parameter.
     
     Args:
-        parameter_name: e.g., "hemoglobin", "wbc", "platelet"
+        parameter_name: e.g., "hemoglobin", "wbc", "platelet", "random_blood_sugar_mg_dL"
         value: numeric value of the parameter
-        prediction_status: 0 (Normal), 1 (Low), 2 (High), 3 (Critical)
+        prediction_status: 0 (Normal), 1 (Low), 2 (High), 3 (Critical) OR string status
         confidence: model confidence (0-1)
         feature_importances: list of dicts with feature contributions
+        patient_data: dict with all patient parameters for risk assessment
     
     Returns:
-        dict matching frontend contract
+        dict matching frontend contract with risk assessments
     """
-    status_label = STATUS_NAMES.get(prediction_status, "Unknown")
-    template = TEMPLATES.get(parameter_name, {}).get(status_label, {})
+    # Convert numeric status to label
+    if isinstance(prediction_status, int):
+        status_label = STATUS_NAMES.get(prediction_status, "Unknown")
+    else:
+        status_label = prediction_status  # Already a string like "Prediabetic"
+    
+    # Try comprehensive templates first
+    template = None
+    if USE_COMPREHENSIVE_TEMPLATES:
+        template = get_template(parameter_name, status_label)
+    
+    # Fallback to legacy templates
+    if not template:
+        legacy_template_key = parameter_name.replace('_g_dL', '').replace('_10e9_L', '').replace('_count', '').replace('_percent', '').replace('_mg_dL', '').replace('_mcg_dL', '').replace('_ng_mL', '').replace('_mIU_L', '').replace('_mm_hr', '').replace('_mg_L', '').replace('_fL', '').replace('_pg', '')
+        template = TEMPLATES.get(legacy_template_key, {}).get(status_label, {})
     
     if not template:
-        # Fallback generic template
+        # Ultimate fallback generic template
         template = {
             "intro": f"Your {parameter_name} level is {value}.",
             "general": f"Status: {status_label}",
@@ -644,10 +681,22 @@ def generate_interpretation(parameter_name, value, prediction_status, confidence
     }
     
     # Add abnormalFindings if not Normal
-    if prediction_status != 0:
+    if (isinstance(prediction_status, int) and prediction_status != 0) or (isinstance(prediction_status, str) and status_label not in ['Normal', 'Sufficient']):
         output["abnormalFindings"] = {
             "primaryFinding": template.get("abnormal_primary", f"{status_label} {parameter_name}"),
             "potentialCauses": template.get("potential_causes", []),
+            "diseaseConditions": template.get("disease_conditions", [])
+        }
+    
+    # Add risk assessments if patient_data provided
+    if patient_data and USE_CLINICAL_FALLBACK:
+        try:
+            output["riskAssessments"] = calculate_risk_assessments(patient_data)
+        except Exception as e:
+            print(f"Error calculating risk assessments: {e}")
+            output["riskAssessments"] = {}
+    
+    return output
             "diseaseConditions": template.get("disease_conditions", [])
         }
     

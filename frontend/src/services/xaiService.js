@@ -47,6 +47,8 @@ export const getXAIInterpretation = async ({
   }
 };
 
-export default {
+const xaiService = {
   getXAIInterpretation,
 };
+
+export default xaiService;
