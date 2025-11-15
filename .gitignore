@@ -21,6 +21,7 @@ backend/uploads/*
 venv/
 env/
 ENV/
+.venv/
 
 # Machine Learning Models (Large files - don't push to GitHub)
 flask-xai-service/models/*.joblib
@@ -30,15 +31,34 @@ flask-xai-service/models/*.h5
 # Large Dataset Files (Don't push to GitHub)
 flask-xai-service/data/processed_cbc_training.csv
 flask-xai-service/data/processed_cbc_training_complete.csv
+flask-xai-service/data/processed_cbc_holdout.csv
 flask-xai-service/data/*.csv
 # Keep only small sample files
 !flask-xai-service/data/sample_10_rows.csv
 !flask-xai-service/data/schema.json
+!flask-xai-service/data/clinical_thresholds.json
+!flask-xai-service/data/label_rules.json
+
+# Test files and scripts (exclude from repo)
+flask-xai-service/test_*.py
+flask-xai-service/cleanup_old_files.ps1
+flask-xai-service/restart_flask.ps1
+flask-xai-service/run_flask.ps1
+flask-xai-service/clinical_rules_fallback.py
+flask-xai-service/lightgbm_training_report.json
+flask-xai-service/medical_text_templates_comprehensive_backup.py
+
+# Sample reports directory
+SampleBloodReports/
 
 # Documentation Summary Files (exclude from repo)
 # Keep: README.md, SETUP_INSTRUCTIONS.md, API_DOCUMENTATION.md
 *_SUMMARY.md
 *_COMPLETE.md
+*_GUIDE.md
+*_FIX.md
+*_ANALYSIS.md
+*_VERIFICATION.md
 IMPLEMENTATION_SUMMARY.md
 OTP_IMPLEMENTATION_SUMMARY.md
 OTP_VERIFICATION_GUIDE.md
@@ -46,6 +66,7 @@ PARAMETER_SYSTEM_DOCUMENTATION.md
 PHASE_1_COMPLETE.md
 PHASE_2A_COMPLETE.md
 QUICK_START.md
+QUICK_START_UPDATED.md
 REDESIGN_COMPLETE.md
 REDESIGN_GUIDE.md
 SETUP_GUIDE.md
@@ -53,6 +74,13 @@ SYSTEM_ARCHITECTURE.md
 COMPILATION_FIXES.md
 DOCUS_UI_IMPLEMENTATION.md
 DYNAMIC_PARAMETERS_GUIDE.md
+INTEGRATION_COMPLETE.md
+MEDICAL_INSIGHTS_FIX.md
+MODEL_ACCURACY_ANALYSIS.md
+PRE_TRAINING_VERIFICATION.md
+SHAP_SOLUTIONS_GUIDE.md
+extracted_blood_reports.txt
+extracted_blood_reports_fitz.txt
 
 # Training reports (optional - comment out if you want to keep)
 flask-xai-service/models/training_report.txt
