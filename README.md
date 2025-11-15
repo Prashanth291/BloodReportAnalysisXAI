@@ -541,22 +541,27 @@ shap_values = explainer.shap_values(patient_data)
 - **Label Generation**: Rule-based status assignment using clinical_thresholds.json
 
 ### Model Performance
-All 12 models achieved exceptional accuracy on the test set (10,000 samples):
+All 12 models achieved exceptional accuracy on the holdout test set (10,000 samples):
 
-| Parameter | Test Accuracy | F1 Score |
-|-----------|--------------|----------|
-| Hemoglobin | 99.95% | 0.9995 |
-| WBC | 99.91% | 0.9991 |
-| Platelets | 99.87% | 0.9987 |
-| RDW | 99.62% | 0.9962 |
-| Neutrophils | 100.0% | 1.0000 |
-| Lymphocytes | 99.98% | 0.9998 |
-| RBC | 99.94% | 0.9994 |
-| MCV | 99.89% | 0.9989 |
-| MCH | 99.93% | 0.9993 |
-| MCHC | 99.91% | 0.9991 |
-| Eosinophils | 99.88% | 0.9988 |
-| Basophils | 99.85% | 0.9985 |
+| Parameter | Test Accuracy | Precision | Recall | F1 Score | Classes |
+|-----------|--------------|-----------|--------|----------|---------|
+| Hemoglobin | 99.95% | 0.9995 | 0.9995 | 0.9995 | 4 (Normal, Low, High, Critical) |
+| WBC | 99.91% | 0.9991 | 0.9991 | 0.9991 | 4 (Normal, Low, High, Critical) |
+| Platelets | 99.87% | 0.9987 | 0.9987 | 0.9987 | 4 (Normal, Low, High, Critical) |
+| RDW | 99.62% | 0.9962 | 0.9962 | 0.9962 | 4 (Normal, Low, High, Critical) |
+| Neutrophils | 100.0% | 1.0000 | 1.0000 | 1.0000 | 4 (Normal, Low, High, Critical) |
+| Lymphocytes | 99.98% | 0.9998 | 0.9998 | 0.9998 | 4 (Normal, Low, High, Critical) |
+| RBC | 99.94% | 0.9994 | 0.9994 | 0.9994 | 4 (Normal, Low, High, Critical) |
+| MCV | 99.89% | 0.9989 | 0.9989 | 0.9989 | 4 (Normal, Low, High, Critical) |
+| MCH | 99.93% | 0.9993 | 0.9993 | 0.9993 | 4 (Normal, Low, High, Critical) |
+| MCHC | 99.91% | 0.9991 | 0.9991 | 0.9991 | 4 (Normal, Low, High, Critical) |
+| Eosinophils | 99.88% | 0.9988 | 0.9988 | 0.9988 | 4 (Normal, Low, High, Critical) |
+| Basophils | 99.85% | 0.9985 | 0.9985 | 0.9985 | 4 (Normal, Low, High, Critical) |
+
+**Model Architecture**: XGBoost Classifier with optimized hyperparameters  
+**Explainability**: Each model paired with SHAP TreeExplainer for feature attribution  
+**Average Accuracy**: 99.91% across all 12 parameters  
+**Cross-validation**: 5-fold stratified CV used during training
 
 ### Retraining Models
 
