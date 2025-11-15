@@ -45,70 +45,76 @@ MODELS_DIR = Path(__file__).parent / "models"
 LOADED_MODELS = {}
 
 def get_model(parameter_name):
-    """Load and cache models. Returns (model, reverse_mapping) tuple."""
+    """Load and cache models. Returns (model, reverse_mapping, feature_names) tuple."""
     # Map normalized parameter names to model filenames
+    # Updated to use LightGBM model filenames (with full parameter names)
     PARAMETER_MODEL_MAP = {
-        'hemoglobin_g_dL': 'hemoglobin',
-        'hemoglobin': 'hemoglobin',
-        'wbc_10e9_L': 'wbc',
-        'wbc': 'wbc',
-        'platelet_count': 'platelet',
-        'platelet': 'platelet',
-        'neutrophils_percent': 'neutrophils',
-        'neutrophil': 'neutrophils',
-        'neutrophils': 'neutrophils',
-        'lymphocytes_percent': 'lymphocytes',
-        'lymphocyte': 'lymphocytes',
-        'lymphocytes': 'lymphocytes',
-        'rdw_percent': 'rdw',
-        'rdw': 'rdw',
-        'monocytes_percent': 'monocytes',
-        'monocyte': 'monocytes',
-        'monocytes': 'monocytes',
-        'eosinophils_percent': 'eosinophils',
-        'eosinophil': 'eosinophils',
-        'eosinophils': 'eosinophils',
-        'basophils_percent': 'basophils',
-        'basophil': 'basophils',
-        'basophils': 'basophils',
-        'rbc_count': 'rbc',
-        'rbc': 'rbc',
-        'mcv_fL': 'mcv',
-        'mcv': 'mcv',
-        'mch_pg': 'mch',
-        'mch': 'mch',
-        'mchc_g_dL': 'mchc',
-        'mchc': 'mchc',
-        'hba1c_percent': 'hba1c',
-        'hba1c': 'hba1c',
-        'random_blood_sugar_mg_dL': 'random_blood_sugar',
-        'rbs': 'random_blood_sugar',
-        'esr_mm_hr': 'esr',
-        'esr': 'esr',
-        'crp_mg_L': 'crp',
-        'crp': 'crp',
-        'serum_creatinine_mg_dL': 'serum_creatinine',
-        'creatinine': 'serum_creatinine',
+        'hemoglobin_g_dL': 'hemoglobin_g_dl',
+        'hemoglobin': 'hemoglobin_g_dl',
+        'wbc_10e9_L': 'wbc_10e9_l',
+        'wbc': 'wbc_10e9_l',
+        'platelet_count': 'platelet_count',
+        'platelet': 'platelet_count',
+        'neutrophils_percent': 'neutrophils_percent',
+        'neutrophil': 'neutrophils_percent',
+        'neutrophils': 'neutrophils_percent',
+        'lymphocytes_percent': 'lymphocytes_percent',
+        'lymphocyte': 'lymphocytes_percent',
+        'lymphocytes': 'lymphocytes_percent',
+        'rdw_percent': 'rdw_percent',
+        'rdw': 'rdw_percent',
+        'monocytes_percent': 'monocytes_percent',
+        'monocyte': 'monocytes_percent',
+        'monocytes': 'monocytes_percent',
+        'eosinophils_percent': 'eosinophils_percent',
+        'eosinophil': 'eosinophils_percent',
+        'eosinophils': 'eosinophils_percent',
+        'basophils_percent': 'basophils_percent',
+        'basophil': 'basophils_percent',
+        'basophils': 'basophils_percent',
+        'rbc_count': 'rbc_count',
+        'rbc': 'rbc_count',
+        'mcv_fL': 'mcv_fl',
+        'mcv': 'mcv_fl',
+        'mch_pg': 'mch_pg',
+        'mch': 'mch_pg',
+        'mchc_g_dL': 'mchc_g_dl',
+        'mchc': 'mchc_g_dl',
+        'hba1c_percent': 'hba1c_percent',
+        'hba1c': 'hba1c_percent',
+        'random_blood_sugar_mg_dL': 'random_blood_sugar_mg_dl',
+        'rbs': 'random_blood_sugar_mg_dl',
+        'esr_mm_hr': 'esr_mm_hr',
+        'esr': 'esr_mm_hr',
+        'crp_mg_L': 'crp_mg_l',
+        'crp': 'crp_mg_l',
+        'serum_creatinine_mg_dL': 'serum_creatinine_mg_dl',
+        'creatinine': 'serum_creatinine_mg_dl',
     }
     key = parameter_name.lower() if parameter_name else ''
     model_key = PARAMETER_MODEL_MAP.get(key, key)
     if model_key not in LOADED_MODELS:
         model_path = MODELS_DIR / f"{model_key}_model.joblib"
         if not model_path.exists():
-            return None, None
+            return None, None, None
         
-        # Load model - could be just model or dict with model + mapping
+        # Load model - could be just model or dict with model + mapping + feature_names
         model_data = joblib.load(model_path)
         if isinstance(model_data, dict) and 'model' in model_data:
-            LOADED_MODELS[model_key] = (model_data['model'], model_data.get('reverse_mapping'))
+            LOADED_MODELS[model_key] = (
+                model_data['model'], 
+                model_data.get('reverse_mapping'),
+                model_data.get('feature_names')  # NEW: Load saved feature names
+            )
         else:
-            LOADED_MODELS[model_key] = (model_data, None)
+            LOADED_MODELS[model_key] = (model_data, None, None)
     
     return LOADED_MODELS[model_key]
 
 
 def normalize_parameter_name(param):
-    """Normalize a human-readable parameter name to internal key supporting 79 parameters.
+    """
+    Normalize a human-readable parameter name to internal key supporting 79 parameters.
     Maps frontend labels to standardized parameter names used in clinical_rules_fallback.
     """
     if not param:
@@ -399,7 +405,21 @@ def interpret():
         logging.info(f"Normalized parameter name: '{parameter}' -> '{normalized_param}'")
         
         # Try loading model first
-        model, reverse_mapping = get_model(normalized_param)
+        # Load model
+        model, reverse_mapping, saved_feature_names = get_model(normalized_param)
+        
+        # Check if this is a LightGBM model (SHAP-compatible)
+        is_lightgbm = False
+        try:
+            model_path = MODELS_DIR / f"{normalized_param}_model.joblib"
+            if model_path.exists():
+                model_data_check = joblib.load(model_path)
+                if isinstance(model_data_check, dict):
+                    is_lightgbm = model_data_check.get('model_type') == 'LightGBM'
+        except:
+            pass
+        
+        logging.info(f"Model type: {'LightGBM (SHAP-compatible)' if is_lightgbm else 'XGBoost (using alternative explainability)'}")
         use_clinical_fallback = False
         
         # Define low-accuracy models that should prefer clinical rules
@@ -438,15 +458,23 @@ def interpret():
             logging.info(f"Model loaded for: '{normalized_param}' (original: '{parameter}')")
             print("==============================================================")
             
+            # Use saved feature names from model if available
+            if saved_feature_names:
+                expected_features = saved_feature_names
+                logging.info(f"Using {len(expected_features)} saved feature names from model")
+            else:
+                # Fallback: try to get from model itself
+                try:
+                    expected_features = model.get_booster().feature_names
+                except Exception:
+                    expected_features = model.feature_names_in_ if hasattr(model, 'feature_names_in_') else list(features_dict.keys())
+                logging.warning(f"No saved feature names, using {len(expected_features)} features from model")
+            
             # Convert to DataFrame matching training features
             feature_df = pd.DataFrame([features_dict])
-            # Align DataFrame columns to model's expected features
-            try:
-                expected_features = model.get_booster().feature_names
-            except Exception:
-                expected_features = model.feature_names_in_ if hasattr(model, 'feature_names_in_') else list(feature_df.columns)
             # Reindex to match model's features, fill missing with 0
             X = feature_df.reindex(columns=expected_features, fill_value=0)
+            logging.info(f"Feature vector shape: {X.shape} (expected: {len(expected_features)} features)")
             # Predict
             prediction_mapped = model.predict(X)[0]
             
@@ -462,14 +490,18 @@ def interpret():
             print("=============================================================")
             logging.info(f"Model prediction: class={prediction}, confidence={confidence}")
             print("==============================================================")
-        # Compute SHAP values (create explainer on-the-fly) - skip if using clinical fallback
+        # ==========================================
+        # EXPLAINABILITY WITHOUT SHAP
+        # ==========================================
         feature_importances = []
         shap_vals = None
         feature_names = list(features_dict.keys()) if use_clinical_fallback else list(X.columns)
         shap_error = None
+        individual_contributions = {}  # Store per-feature contributions for this prediction
+        decision_path_info = {}  # Store decision tree path information
         
         if use_clinical_fallback:
-            logging.info("Skipping SHAP computation (clinical fallback mode)")
+            logging.info("Skipping explainability computation (clinical fallback mode)")
             feature_importances = []  # Clinical rules don't have feature importances
         else:
             # Prefer TreeExplainer for tree-based models (XGBoost, RandomForest, etc.)
@@ -492,19 +524,95 @@ def interpret():
             explainer_type = None
             attempts = []
             try:
-                # prefer TreeExplainer on the model object
-                if is_tree:
-                    attempts.append(('TreeExplainer_model', lambda: shap.TreeExplainer(model)))
-                # try using underlying booster if available (XGBoost)
-                if hasattr(model, 'get_booster'):
-                    attempts.append(('TreeExplainer_booster', lambda: shap.TreeExplainer(model.get_booster())))
-                # generic explainer using model object
-                attempts.append(('GenericExplainer', lambda: shap.Explainer(model, X[:1])))
-                # explainer using predict_proba if available
-                if hasattr(model, 'predict_proba'):
-                    attempts.append(('PredictProbaExplainer', lambda: shap.Explainer(lambda d: model.predict_proba(d), X[:1])))
-                # kernel explainer as last resort (slow)
-                attempts.append(('KernelExplainer', lambda: shap.KernelExplainer((lambda d: model.predict_proba(d) if hasattr(model, 'predict_proba') else model.predict(d)), X[:min(len(X), max(1, int(len(X))))])) )
+                # For XGBoost models (not LightGBM), skip SHAP due to base_score bug
+                # For LightGBM models, SHAP works perfectly!
+                if hasattr(model, 'get_booster') and not is_lightgbm:
+                    logging.info("XGBoost model detected - using advanced explainability methods (no SHAP)")
+                    shap_values = None
+                    shap_error = "XGBoost base_score incompatibility - using alternative explainability"
+                    explainer = None
+                    explainer_type = None
+                    
+                    # ==========================================
+                    # METHOD 1: Global Feature Importance (Model-wide)
+                    # ==========================================
+                    global_importances = model.feature_importances_
+                    
+                    # ==========================================
+                    # METHOD 2: Local Feature Contribution (This Prediction)
+                    # Using predict_proba to see how features affected THIS prediction
+                    # ==========================================
+                    try:
+                        import numpy as np
+                        # Get base prediction (using median of training data as baseline)
+                        X_baseline = X.copy()
+                        for col in X_baseline.columns:
+                            X_baseline[col] = 0  # Use zero as baseline (neutral state)
+                        
+                        # Get prediction probabilities for actual vs baseline
+                        proba_actual = model.predict_proba(X)[0]
+                        proba_baseline = model.predict_proba(X_baseline)[0]
+                        
+                        # Calculate contribution: how much each feature changed the prediction
+                        # We'll use a simple perturbation method: set each feature to baseline one at a time
+                        for i, feature in enumerate(feature_names):
+                            X_perturbed = X.copy()
+                            X_perturbed.iloc[0, i] = 0  # Set this feature to baseline
+                            proba_perturbed = model.predict_proba(X_perturbed)[0]
+                            
+                            # Contribution = change in predicted class probability
+                            contribution = proba_actual[prediction] - proba_perturbed[prediction]
+                            individual_contributions[feature] = float(contribution)
+                        
+                        logging.info(f"Computed individual feature contributions for {len(individual_contributions)} features")
+                    except Exception as e:
+                        logging.warning(f"Could not compute individual contributions: {e}")
+                        individual_contributions = {}
+                    
+                    # ==========================================
+                    # METHOD 3: Decision Path Analysis (Tree-based)
+                    # ==========================================
+                    try:
+                        booster = model.get_booster()
+                        # Get prediction contributions using XGBoost's built-in method
+                        # This shows how each feature contributed to moving the prediction from base_score
+                        contributions = model.predict(X, pred_contribs=True)
+                        
+                        if contributions is not None and len(contributions) > 0:
+                            # pred_contribs returns [feature_contributions..., bias]
+                            # Last value is the bias term
+                            feature_contribs = contributions[0][:-1]  # Exclude bias
+                            
+                            # Store top contributing features
+                            contrib_dict = {}
+                            for fname, contrib in zip(feature_names, feature_contribs):
+                                contrib_dict[fname] = float(contrib)
+                            
+                            decision_path_info = {
+                                'contributions': contrib_dict,
+                                'bias': float(contributions[0][-1]) if len(contributions[0]) > len(feature_names) else 0.0,
+                                'method': 'XGBoost pred_contribs'
+                            }
+                            logging.info(f"✅ Computed XGBoost prediction contributions (tree path analysis)")
+                        
+                    except Exception as e:
+                        logging.warning(f"Could not compute decision path: {e}")
+                    
+                    # Break out of SHAP computation
+                    attempts = []
+                
+                # For LightGBM models, SHAP TreeExplainer works perfectly!
+                elif is_lightgbm and is_tree:
+                    logging.info("LightGBM model detected - using SHAP TreeExplainer")
+                    attempts.append(('TreeExplainer_LightGBM', lambda: shap.TreeExplainer(model)))
+                
+                # For non-XGBoost models, try explainers
+                # Explainer using predict_proba if available
+                if hasattr(model, 'predict_proba') and len(attempts) > 0:
+                    attempts.append(('PredictProbaExplainer', lambda: shap.Explainer(lambda d: model.predict_proba(d), X[:10] if len(X) >= 10 else X)))
+                # Generic explainer using model object
+                if len(attempts) > 0:
+                    attempts.append(('GenericExplainer', lambda: shap.Explainer(model, X[:10] if len(X) >= 10 else X)))
             except Exception as e:
                 logging.warning(f"Error preparing SHAP explainer attempts: {e}")
 
@@ -524,7 +632,6 @@ def interpret():
                     if vals is None:
                         logging.info(f"Explainer {name} returned no values")
                         continue
-                    import numpy as np
                     vals_np = np.array(vals)
                     logging.info(f"Explainer {name} returned SHAP values shape: {vals_np.shape}")
                     # accept this explainer if it produced a non-empty values array
@@ -547,10 +654,11 @@ def interpret():
 
             # Normalize shap values to a 1-D array for the sample and predicted class
             try:
-                vals = getattr(shap_values, 'values', None)
-                if vals is None:
-                    raise ValueError('shap_values has no attribute "values"')
-                vals = np.array(vals)
+                # Handle both Explanation objects (.values) and raw numpy arrays
+                if hasattr(shap_values, 'values'):
+                    vals = np.array(shap_values.values)
+                else:
+                    vals = np.array(shap_values)
                 n_feat = len(feature_names)
                 
                 # Debug: log the shape we received
@@ -581,33 +689,81 @@ def interpret():
 
                 shap_vals = class_shap.tolist()
                 
-                # Debug: log raw SHAP values
+                # Debug: log raw SHAP values with more detail
+                print("==============================================================")
+                logging.info(f"✅ SHAP VALUES COMPUTED SUCCESSFULLY")
+                print("==============================================================")
                 logging.info(f"Raw SHAP values (first 10): {class_shap[:10]}")
                 logging.info(f"SHAP value range: min={class_shap.min():.6f}, max={class_shap.max():.6f}")
+                print("==============================================================")
+                logging.info(f"Top SHAP contributors:")
                 
+                # Create feature importances with detailed logging
+                temp_importances = []
                 for fname, impact in zip(feature_names, class_shap):
                     if abs(impact) > 0.01:
-                        feature_importances.append({
+                        temp_importances.append({
                             "feature": fname,
                             "impact": float(impact),
                             "direction": "increases" if impact > 0 else "decreases"
                         })
-                feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
-                logging.info(f"Feature importances found: {len(feature_importances)} (after filtering > 0.01)")
                 
-                # Fallback: if SHAP returns all zeros, use model's feature importances
-                if len(feature_importances) == 0 and hasattr(model, 'feature_importances_'):
-                    logging.info("SHAP returned all zeros, falling back to model feature importances")
-                    model_importances = model.feature_importances_
-                    for fname, importance in zip(feature_names, model_importances):
-                        if importance > 0.01:
-                            feature_importances.append({
-                                "feature": fname,
-                                "impact": float(importance),
-                                "direction": "importance"  # Model importances don't have direction
-                            })
-                    feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
-                    logging.info(f"Using {len(feature_importances)} model-based feature importances")
+                # Sort and take top 5
+                feature_importances = sorted(temp_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
+                
+                # Log each top contributor
+                for i, fi in enumerate(feature_importances, 1):
+                    logging.info(f"  {i}. {fi['feature']}: {fi['impact']:.4f} ({fi['direction']} prediction)")
+                
+                print("==============================================================")
+                logging.info(f"Feature importances found: {len(feature_importances)} (after filtering > 0.01)")
+                print("==============================================================")
+                
+                # Fallback: if SHAP returns all zeros, use our enhanced explainability methods
+                if len(feature_importances) == 0:
+                    logging.info("Using alternative explainability methods (no SHAP)")
+                    
+                    # Priority 1: Use decision path contributions (tree-specific, most accurate)
+                    if decision_path_info.get('contributions'):
+                        logging.info("Using XGBoost prediction contributions (tree path analysis)")
+                        for fname, contrib in decision_path_info['contributions'].items():
+                            if abs(contrib) > 0.001:  # Lower threshold for contributions
+                                feature_importances.append({
+                                    "feature": fname,
+                                    "impact": float(contrib),
+                                    "direction": "increases" if contrib > 0 else "decreases",
+                                    "method": "tree_path"
+                                })
+                        feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                    
+                    # Priority 2: Use individual contributions (perturbation-based)
+                    elif individual_contributions:
+                        logging.info("Using individual feature contributions (perturbation method)")
+                        for fname, contrib in individual_contributions.items():
+                            if abs(contrib) > 0.01:
+                                feature_importances.append({
+                                    "feature": fname,
+                                    "impact": float(contrib),
+                                    "direction": "increases" if contrib > 0 else "decreases",
+                                    "method": "perturbation"
+                                })
+                        feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                    
+                    # Priority 3: Use global feature importances (model-wide)
+                    elif hasattr(model, 'feature_importances_'):
+                        logging.info("Using model global feature importances")
+                        model_importances = model.feature_importances_
+                        for fname, importance in zip(feature_names, model_importances):
+                            if importance > 0.01:
+                                feature_importances.append({
+                                    "feature": fname,
+                                    "impact": float(importance),
+                                    "direction": "importance",
+                                    "method": "global"
+                                })
+                        feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                    
+                    logging.info(f"✅ Extracted {len(feature_importances)} feature importances using alternative methods")
             except Exception as inner_e:
                 shap_error = f"SHAP parse error: {inner_e}\n{traceback.format_exc()}"
                 logging.warning(shap_error)
@@ -626,6 +782,13 @@ def interpret():
         # Add SHAP values and feature names for frontend visualization
         interpretation["shap_values"] = shap_vals
         interpretation["feature_names"] = feature_names
+        # Add enhanced explainability information
+        if decision_path_info:
+            interpretation["decision_path"] = decision_path_info
+        if individual_contributions:
+            # Send top 10 individual contributions
+            top_contributions = sorted(individual_contributions.items(), key=lambda x: abs(x[1]), reverse=True)[:10]
+            interpretation["individual_contributions"] = dict(top_contributions)
         # Developer debug: include shap error details when computation failed (may be None)
         interpretation["shap_error"] = shap_error
         print("==============================================================")

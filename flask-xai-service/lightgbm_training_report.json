@@ -1,0 +1,171 @@
+{
+  "timestamp": "2025-11-15 21:09:02.672887",
+  "models_trained": 11,
+  "models_failed": 0,
+  "results": [
+    {
+      "parameter": "hemoglobin_g_dL",
+      "target_column": "hemoglobin_status",
+      "train_accuracy": 0.99182,
+      "holdout_accuracy": 0.9756,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 26,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "wbc_10e9_L",
+      "target_column": "wbc_status",
+      "train_accuracy": 1.0,
+      "holdout_accuracy": 0.9965,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 26,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "platelet_count",
+      "target_column": "platelet_status",
+      "train_accuracy": 1.0,
+      "holdout_accuracy": 0.9952,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 26,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "neutrophils_percent",
+      "target_column": "neutrophil_status",
+      "train_accuracy": 0.99987,
+      "holdout_accuracy": 0.9901,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 26,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "lymphocytes_percent",
+      "target_column": "lymphocyte_status",
+      "train_accuracy": 0.99995,
+      "holdout_accuracy": 0.991,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 26,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "rdw_percent",
+      "target_column": "rdw_status",
+      "train_accuracy": 0.56572,
+      "holdout_accuracy": 0.5495,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 26,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "random_blood_sugar_mg_dL",
+      "target_column": "rbs_status",
+      "train_accuracy": 0.88942,
+      "holdout_accuracy": 0.8669,
+      "classes": [
+        0,
+        2,
+        3
+      ],
+      "features_count": 27,
+      "has_class_mapping": true,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "hba1c_percent",
+      "target_column": "hba1c_status",
+      "train_accuracy": 0.89898,
+      "holdout_accuracy": 0.8935,
+      "classes": [
+        0,
+        2,
+        3
+      ],
+      "features_count": 27,
+      "has_class_mapping": true,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "esr_mm_hr",
+      "target_column": "esr_status",
+      "train_accuracy": 0.86325,
+      "holdout_accuracy": 0.8317,
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "features_count": 27,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "crp_mg_L",
+      "target_column": "crp_status",
+      "train_accuracy": 0.90336,
+      "holdout_accuracy": 0.8831,
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "features_count": 27,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    },
+    {
+      "parameter": "serum_creatinine_mg_dL",
+      "target_column": "creatinine_status",
+      "train_accuracy": 0.70043,
+      "holdout_accuracy": 0.6484,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "features_count": 27,
+      "has_class_mapping": false,
+      "model_type": "LightGBM"
+    }
+  ],
+  "failed": [],
+  "model_library": "LightGBM",
+  "shap_compatible": true
+}

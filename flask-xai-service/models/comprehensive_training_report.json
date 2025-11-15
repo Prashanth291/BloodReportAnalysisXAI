@@ -1,15 +1,15 @@
 {
-  "timestamp": "2025-11-14 07:38:15.686268",
+  "timestamp": "2025-11-15 19:56:50.418213",
   "models_trained": 11,
   "models_failed": 0,
-  "total_parameters": 30,
+  "total_parameters": 11,
   "results": [
     {
       "parameter": "hemoglobin_g_dL",
       "model_file": "hemoglobin_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.96021,
-      "holdout_accuracy": 0.9253,
+      "train_accuracy": 0.9608,
+      "holdout_accuracy": 0.9254,
       "classes": [
         0,
         1,
@@ -28,8 +28,8 @@
       "parameter": "wbc_10e9_L",
       "model_file": "wbc_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.68215,
-      "holdout_accuracy": 0.6625,
+      "train_accuracy": 0.6823,
+      "holdout_accuracy": 0.6614,
       "classes": [
         0,
         1,
@@ -48,8 +48,8 @@
       "parameter": "platelet_count",
       "model_file": "platelet_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.7808,
-      "holdout_accuracy": 0.7794,
+      "train_accuracy": 0.78075,
+      "holdout_accuracy": 0.7795,
       "classes": [
         0,
         1,
@@ -68,8 +68,8 @@
       "parameter": "neutrophils_percent",
       "model_file": "neutrophils_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.99965,
-      "holdout_accuracy": 0.9885,
+      "train_accuracy": 0.9994,
+      "holdout_accuracy": 0.9884,
       "classes": [
         0,
         1,
@@ -88,8 +88,8 @@
       "parameter": "lymphocytes_percent",
       "model_file": "lymphocytes_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.99967,
-      "holdout_accuracy": 0.9882,
+      "train_accuracy": 0.99952,
+      "holdout_accuracy": 0.9886,
       "classes": [
         0,
         1,
@@ -108,8 +108,8 @@
       "parameter": "rdw_percent",
       "model_file": "rdw_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.57053,
-      "holdout_accuracy": 0.5565,
+      "train_accuracy": 0.57062,
+      "holdout_accuracy": 0.5563,
       "classes": [
         0,
         1,
@@ -128,8 +128,8 @@
       "parameter": "random_blood_sugar_mg_dL",
       "model_file": "random_blood_sugar_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.95458,
-      "holdout_accuracy": 0.9172,
+      "train_accuracy": 0.95385,
+      "holdout_accuracy": 0.9174,
       "classes": [
         0,
         2,
@@ -147,7 +147,7 @@
       "model_file": "hba1c_model.joblib",
       "features_count": 50,
       "train_accuracy": 1.0,
-      "holdout_accuracy": 0.9962,
+      "holdout_accuracy": 0.9963,
       "classes": [
         0,
         2,
@@ -164,8 +164,8 @@
       "parameter": "esr_mm_hr",
       "model_file": "esr_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.92338,
-      "holdout_accuracy": 0.8801,
+      "train_accuracy": 0.92313,
+      "holdout_accuracy": 0.8808,
       "classes": [
         0,
         1,
@@ -182,8 +182,8 @@
       "parameter": "crp_mg_L",
       "model_file": "crp_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.94854,
-      "holdout_accuracy": 0.925,
+      "train_accuracy": 0.94872,
+      "holdout_accuracy": 0.9248,
       "classes": [
         0,
         1,
@@ -200,8 +200,8 @@
       "parameter": "serum_creatinine_mg_dL",
       "model_file": "serum_creatinine_model.joblib",
       "features_count": 50,
-      "train_accuracy": 0.83216,
-      "holdout_accuracy": 0.8008,
+      "train_accuracy": 0.83259,
+      "holdout_accuracy": 0.8011,
       "classes": [
         0,
         1,
