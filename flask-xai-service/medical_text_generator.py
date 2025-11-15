@@ -696,10 +696,20 @@ def generate_interpretation(parameter_name, value, prediction_status, confidence
     }
     
     # Build output
+    # Transform detailed array from strings to {label, text} format for frontend
+    detailed_items = template.get("detailed", [])
+    formatted_detailed = []
+    for item in detailed_items:
+        if isinstance(item, str) and item.strip():  # Only include non-empty strings
+            formatted_detailed.append({
+                "label": "",  # No label prefix needed
+                "text": item
+            })
+    
     output = {
         "introduction": template.get("intro", ""),
         "generalInterpretation": template.get("general", ""),
-        "detailedExplanation": template.get("detailed", []),
+        "detailedExplanation": formatted_detailed,
         "recommendations": template.get("recommendations", []),
         "explainability": explainability
     }
