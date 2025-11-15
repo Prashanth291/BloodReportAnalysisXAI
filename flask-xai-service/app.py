@@ -504,7 +504,7 @@ def interpret():
             logging.info("Skipping explainability computation (clinical fallback mode)")
             feature_importances = []  # Clinical rules don't have feature importances
         else:
-            # Prefer TreeExplainer for tree-based models (XGBoost, RandomForest, etc.)
+            # Prefer TreeExplainer for tree-based models (XGBoost, LightGBM, RandomForest, etc.)
             explainer = None
             explainer_type = None
             shap_error = None
@@ -513,6 +513,13 @@ def interpret():
                 is_tree = isinstance(model, (XGBClassifier, XGBRegressor))
             except ImportError:
                 is_tree = False
+            # Check for LightGBM models
+            if not is_tree and is_lightgbm:
+                try:
+                    from lightgbm import LGBMClassifier, LGBMRegressor
+                    is_tree = isinstance(model, (LGBMClassifier, LGBMRegressor))
+                except ImportError:
+                    is_tree = False
             # Also check for scikit-learn RandomForest, ExtraTrees, etc.
             if not is_tree:
                 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, ExtraTreesClassifier, ExtraTreesRegressor
@@ -543,7 +550,6 @@ def interpret():
                     # Using predict_proba to see how features affected THIS prediction
                     # ==========================================
                     try:
-                        import numpy as np
                         # Get base prediction (using median of training data as baseline)
                         X_baseline = X.copy()
                         for col in X_baseline.columns:
@@ -628,7 +634,15 @@ def interpret():
                         logging.warning(f"Explainer {name} failed to compute SHAP: {e}")
                         logging.debug(traceback.format_exc())
                         continue
-                    vals = getattr(cand_vals, 'values', None)
+                    
+                    # Handle both Explanation objects (.values) and raw numpy arrays (LightGBM)
+                    if hasattr(cand_vals, 'values'):
+                        vals = cand_vals.values
+                    elif isinstance(cand_vals, np.ndarray):
+                        vals = cand_vals
+                    else:
+                        vals = None
+                    
                     if vals is None:
                         logging.info(f"Explainer {name} returned no values")
                         continue
@@ -650,125 +664,126 @@ def interpret():
 
             feature_importances = []
             shap_vals = None
-            feature_names = list(X.columns)
 
             # Normalize shap values to a 1-D array for the sample and predicted class
-            try:
-                # Handle both Explanation objects (.values) and raw numpy arrays
-                if hasattr(shap_values, 'values'):
-                    vals = np.array(shap_values.values)
-                else:
-                    vals = np.array(shap_values)
-                n_feat = len(feature_names)
-                
-                # Debug: log the shape we received
-                logging.info(f"SHAP raw shape: {vals.shape}, n_features expected: {n_feat}, prediction class: {prediction}")
-
-                # Handle different possible SHAP shapes robustly
-                if vals.ndim == 1:
-                    class_shap = vals
-                elif vals.ndim == 2:
-                    if vals.shape[1] == n_feat:
-                        class_shap = vals[0]
-                    elif vals.shape[0] == n_feat:
-                        class_shap = vals[:, 0]
+            if shap_values is not None:
+                try:
+                    # Handle both Explanation objects (.values) and raw numpy arrays
+                    if hasattr(shap_values, 'values'):
+                        vals_array = np.array(shap_values.values)
                     else:
-                        raise ValueError(f'Unexpected 2D SHAP shape: {vals.shape}')
-                elif vals.ndim == 3:
-                    # Shape is (n_samples, n_features, n_classes) or (n_samples, n_classes, n_features)
-                    if vals.shape[2] == n_feat:
-                        # Shape: (1, n_classes, n_features) - extract features for predicted class
-                        class_shap = vals[0, prediction, :]
-                    elif vals.shape[1] == n_feat:
-                        # Shape: (1, n_features, n_classes) - extract features for predicted class
-                        class_shap = vals[0, :, prediction]
-                    else:
-                        raise ValueError(f'Unexpected 3D SHAP shape: {vals.shape}')
-                else:
-                    raise ValueError(f'Unsupported SHAP values ndim: {vals.ndim}')
+                        vals_array = np.array(shap_values)
+                    n_feat = len(feature_names)
+                    
+                    # Debug: log the shape we received
+                    logging.info(f"SHAP raw shape: {vals_array.shape}, n_features expected: {n_feat}, prediction class: {prediction}")
 
-                shap_vals = class_shap.tolist()
-                
-                # Debug: log raw SHAP values with more detail
-                print("==============================================================")
-                logging.info(f"✅ SHAP VALUES COMPUTED SUCCESSFULLY")
-                print("==============================================================")
-                logging.info(f"Raw SHAP values (first 10): {class_shap[:10]}")
-                logging.info(f"SHAP value range: min={class_shap.min():.6f}, max={class_shap.max():.6f}")
-                print("==============================================================")
-                logging.info(f"Top SHAP contributors:")
-                
-                # Create feature importances with detailed logging
-                temp_importances = []
-                for fname, impact in zip(feature_names, class_shap):
-                    if abs(impact) > 0.01:
-                        temp_importances.append({
-                            "feature": fname,
-                            "impact": float(impact),
-                            "direction": "increases" if impact > 0 else "decreases"
-                        })
-                
-                # Sort and take top 5
-                feature_importances = sorted(temp_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
-                
-                # Log each top contributor
-                for i, fi in enumerate(feature_importances, 1):
-                    logging.info(f"  {i}. {fi['feature']}: {fi['impact']:.4f} ({fi['direction']} prediction)")
-                
-                print("==============================================================")
-                logging.info(f"Feature importances found: {len(feature_importances)} (after filtering > 0.01)")
-                print("==============================================================")
-                
-                # Fallback: if SHAP returns all zeros, use our enhanced explainability methods
-                if len(feature_importances) == 0:
-                    logging.info("Using alternative explainability methods (no SHAP)")
+                    # Handle different possible SHAP shapes robustly
+                    if vals_array.ndim == 1:
+                        class_shap = vals_array
+                    elif vals_array.ndim == 2:
+                        if vals_array.shape[1] == n_feat:
+                            class_shap = vals_array[0]
+                        elif vals_array.shape[0] == n_feat:
+                            class_shap = vals_array[:, 0]
+                        else:
+                            raise ValueError(f'Unexpected 2D SHAP shape: {vals_array.shape}')
+                    elif vals_array.ndim == 3:
+                        # Shape is (n_samples, n_features, n_classes) or (n_samples, n_classes, n_features)
+                        if vals_array.shape[2] == n_feat:
+                            # Shape: (1, n_classes, n_features) - extract features for predicted class
+                            class_shap = vals_array[0, int(prediction), :]
+                        elif vals_array.shape[1] == n_feat:
+                            # Shape: (1, n_features, n_classes) - extract features for predicted class
+                            class_shap = vals_array[0, :, int(prediction)]
+                        else:
+                            raise ValueError(f'Unexpected 3D SHAP shape: {vals_array.shape}')
+                    else:
+                        raise ValueError(f'Unsupported SHAP values ndim: {vals_array.ndim}')
+
+                    shap_vals = class_shap.tolist()
                     
-                    # Priority 1: Use decision path contributions (tree-specific, most accurate)
-                    if decision_path_info.get('contributions'):
-                        logging.info("Using XGBoost prediction contributions (tree path analysis)")
-                        for fname, contrib in decision_path_info['contributions'].items():
-                            if abs(contrib) > 0.001:  # Lower threshold for contributions
-                                feature_importances.append({
-                                    "feature": fname,
-                                    "impact": float(contrib),
-                                    "direction": "increases" if contrib > 0 else "decreases",
-                                    "method": "tree_path"
-                                })
-                        feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                    # Debug: log raw SHAP values with more detail
+                    print("==============================================================")
+                    logging.info(f"✅ SHAP VALUES COMPUTED SUCCESSFULLY")
+                    print("==============================================================")
+                    logging.info(f"Raw SHAP values (first 10): {class_shap[:10]}")
+                    logging.info(f"SHAP value range: min={class_shap.min():.6f}, max={class_shap.max():.6f}")
+                    print("==============================================================")
+                    logging.info(f"Top SHAP contributors:")
                     
-                    # Priority 2: Use individual contributions (perturbation-based)
-                    elif individual_contributions:
-                        logging.info("Using individual feature contributions (perturbation method)")
-                        for fname, contrib in individual_contributions.items():
-                            if abs(contrib) > 0.01:
-                                feature_importances.append({
-                                    "feature": fname,
-                                    "impact": float(contrib),
-                                    "direction": "increases" if contrib > 0 else "decreases",
-                                    "method": "perturbation"
-                                })
-                        feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                    # Create feature importances with detailed logging
+                    temp_importances = []
+                    for fname, impact in zip(feature_names, class_shap):
+                        if abs(impact) > 0.01:
+                            temp_importances.append({
+                                "feature": fname,
+                                "impact": float(impact),
+                                "direction": "increases" if impact > 0 else "decreases"
+                            })
                     
-                    # Priority 3: Use global feature importances (model-wide)
-                    elif hasattr(model, 'feature_importances_'):
-                        logging.info("Using model global feature importances")
-                        model_importances = model.feature_importances_
-                        for fname, importance in zip(feature_names, model_importances):
-                            if importance > 0.01:
-                                feature_importances.append({
-                                    "feature": fname,
-                                    "impact": float(importance),
-                                    "direction": "importance",
-                                    "method": "global"
-                                })
-                        feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                    # Sort and take top 5
+                    feature_importances = sorted(temp_importances, key=lambda x: abs(x['impact']), reverse=True)[:5]
                     
-                    logging.info(f"✅ Extracted {len(feature_importances)} feature importances using alternative methods")
-            except Exception as inner_e:
-                shap_error = f"SHAP parse error: {inner_e}\n{traceback.format_exc()}"
-                logging.warning(shap_error)
-                feature_importances = []
-                shap_vals = None
+                    # Log each top contributor
+                    for i, fi in enumerate(feature_importances, 1):
+                        logging.info(f"  {i}. {fi['feature']}: {fi['impact']:.4f} ({fi['direction']} prediction)")
+                    
+                    print("==============================================================")
+                    logging.info(f"Feature importances found: {len(feature_importances)} (after filtering > 0.01)")
+                    print("==============================================================")
+                    
+                except Exception as inner_e:
+                    shap_error = f"SHAP parse error: {inner_e}\n{traceback.format_exc()}"
+                    logging.warning(shap_error)
+                    feature_importances = []
+                    shap_vals = None
+            
+            # Fallback: if SHAP returns all zeros or failed, use our enhanced explainability methods
+            if len(feature_importances) == 0:
+                logging.info("Using alternative explainability methods (no SHAP)")
+                
+                # Priority 1: Use decision path contributions (tree-specific, most accurate)
+                if decision_path_info.get('contributions'):
+                    logging.info("Using XGBoost prediction contributions (tree path analysis)")
+                    for fname, contrib in decision_path_info['contributions'].items():
+                        if abs(contrib) > 0.001:  # Lower threshold for contributions
+                            feature_importances.append({
+                                "feature": fname,
+                                "impact": float(contrib),
+                                "direction": "increases" if contrib > 0 else "decreases",
+                                "method": "tree_path"
+                            })
+                    feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                
+                # Priority 2: Use individual contributions (perturbation-based)
+                elif individual_contributions:
+                    logging.info("Using individual feature contributions (perturbation method)")
+                    for fname, contrib in individual_contributions.items():
+                        if abs(contrib) > 0.01:
+                            feature_importances.append({
+                                "feature": fname,
+                                "impact": float(contrib),
+                                "direction": "increases" if contrib > 0 else "decreases",
+                                "method": "perturbation"
+                            })
+                    feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                
+                # Priority 3: Use global feature importances (model-wide)
+                elif hasattr(model, 'feature_importances_'):
+                    logging.info("Using model global feature importances")
+                    model_importances = model.feature_importances_
+                    for fname, importance in zip(feature_names, model_importances):
+                        if importance > 0.01:
+                            feature_importances.append({
+                                "feature": fname,
+                                "impact": float(importance),
+                                "direction": "importance",
+                                "method": "global"
+                            })
+                    feature_importances = sorted(feature_importances, key=lambda x: abs(x['impact']), reverse=True)[:10]
+                
+                logging.info(f"✅ Extracted {len(feature_importances)} feature importances using alternative methods")
         
         # Generate medical text with patient data for risk assessments
         interpretation = generate_interpretation(
