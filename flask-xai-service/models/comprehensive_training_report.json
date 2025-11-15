@@ -1,0 +1,220 @@
+{
+  "timestamp": "2025-11-14 07:38:15.686268",
+  "models_trained": 11,
+  "models_failed": 0,
+  "total_parameters": 30,
+  "results": [
+    {
+      "parameter": "hemoglobin_g_dL",
+      "model_file": "hemoglobin_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.96021,
+      "holdout_accuracy": 0.9253,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 57059,
+        "1": 30116,
+        "2": 11906,
+        "3": 919
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "wbc_10e9_L",
+      "model_file": "wbc_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.68215,
+      "holdout_accuracy": 0.6625,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 63703,
+        "1": 10247,
+        "2": 19276,
+        "3": 6774
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "platelet_count",
+      "model_file": "platelet_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.7808,
+      "holdout_accuracy": 0.7794,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 77821,
+        "1": 14539,
+        "2": 5695,
+        "3": 1945
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "neutrophils_percent",
+      "model_file": "neutrophils_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.99965,
+      "holdout_accuracy": 0.9885,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 51305,
+        "1": 37966,
+        "2": 9347,
+        "3": 1382
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "lymphocytes_percent",
+      "model_file": "lymphocytes_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.99967,
+      "holdout_accuracy": 0.9882,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 44323,
+        "1": 24308,
+        "2": 31136,
+        "3": 233
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "rdw_percent",
+      "model_file": "rdw_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.57053,
+      "holdout_accuracy": 0.5565,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 52718,
+        "1": 21638,
+        "2": 25185,
+        "3": 459
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "random_blood_sugar_mg_dL",
+      "model_file": "random_blood_sugar_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.95458,
+      "holdout_accuracy": 0.9172,
+      "classes": [
+        0,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 82881,
+        "2": 11594,
+        "3": 5525
+      },
+      "has_class_mapping": true
+    },
+    {
+      "parameter": "hba1c_percent",
+      "model_file": "hba1c_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 1.0,
+      "holdout_accuracy": 0.9962,
+      "classes": [
+        0,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 80491,
+        "2": 4828,
+        "3": 14681
+      },
+      "has_class_mapping": true
+    },
+    {
+      "parameter": "esr_mm_hr",
+      "model_file": "esr_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.92338,
+      "holdout_accuracy": 0.8801,
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "class_distribution": {
+        "0": 81351,
+        "1": 14884,
+        "2": 3765
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "crp_mg_L",
+      "model_file": "crp_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.94854,
+      "holdout_accuracy": 0.925,
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "class_distribution": {
+        "0": 86804,
+        "1": 11386,
+        "2": 1810
+      },
+      "has_class_mapping": false
+    },
+    {
+      "parameter": "serum_creatinine_mg_dL",
+      "model_file": "serum_creatinine_model.joblib",
+      "features_count": 50,
+      "train_accuracy": 0.83216,
+      "holdout_accuracy": 0.8008,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "class_distribution": {
+        "0": 51248,
+        "1": 43548,
+        "2": 4416,
+        "3": 788
+      },
+      "has_class_mapping": false
+    }
+  ]
+}

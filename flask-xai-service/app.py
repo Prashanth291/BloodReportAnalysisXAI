@@ -19,10 +19,11 @@ import traceback
 # MongoDB cache for XAI results
 from mongo_cache import get_cached_interpretation, set_cached_interpretation
 
-# Import the medical text generator
+# Import the medical text generator and clinical fallback
 import sys
 sys.path.append(str(Path(__file__).parent))
 from medical_text_generator import generate_interpretation, STATUS_NAMES
+from clinical_rules_fallback import classify_by_threshold, calculate_risk_assessments
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend access
@@ -44,42 +45,71 @@ MODELS_DIR = Path(__file__).parent / "models"
 LOADED_MODELS = {}
 
 def get_model(parameter_name):
-    """Load and cache models."""
-    # Map parameter aliases to model filenames
+    """Load and cache models. Returns (model, reverse_mapping) tuple."""
+    # Map normalized parameter names to model filenames
     PARAMETER_MODEL_MAP = {
+        'hemoglobin_g_dL': 'hemoglobin',
         'hemoglobin': 'hemoglobin',
+        'wbc_10e9_L': 'wbc',
         'wbc': 'wbc',
+        'platelet_count': 'platelet',
         'platelet': 'platelet',
-        'neutrophil': 'neutrophil',
-        'neutrophils': 'neutrophil',
-        'lymphocyte': 'lymphocyte',
-        'lymphocytes': 'lymphocyte',
+        'neutrophils_percent': 'neutrophils',
+        'neutrophil': 'neutrophils',
+        'neutrophils': 'neutrophils',
+        'lymphocytes_percent': 'lymphocytes',
+        'lymphocyte': 'lymphocytes',
+        'lymphocytes': 'lymphocytes',
+        'rdw_percent': 'rdw',
         'rdw': 'rdw',
-        'monocyte': 'monocyte',
-        'monocytes': 'monocyte',
-        'eosinophil': 'eosinophil',
-        'eosinophils': 'eosinophil',
-        'basophil': 'basophil',
-        'basophils': 'basophil',
+        'monocytes_percent': 'monocytes',
+        'monocyte': 'monocytes',
+        'monocytes': 'monocytes',
+        'eosinophils_percent': 'eosinophils',
+        'eosinophil': 'eosinophils',
+        'eosinophils': 'eosinophils',
+        'basophils_percent': 'basophils',
+        'basophil': 'basophils',
+        'basophils': 'basophils',
+        'rbc_count': 'rbc',
         'rbc': 'rbc',
+        'mcv_fL': 'mcv',
         'mcv': 'mcv',
+        'mch_pg': 'mch',
         'mch': 'mch',
+        'mchc_g_dL': 'mchc',
         'mchc': 'mchc',
+        'hba1c_percent': 'hba1c',
+        'hba1c': 'hba1c',
+        'random_blood_sugar_mg_dL': 'random_blood_sugar',
+        'rbs': 'random_blood_sugar',
+        'esr_mm_hr': 'esr',
+        'esr': 'esr',
+        'crp_mg_L': 'crp',
+        'crp': 'crp',
+        'serum_creatinine_mg_dL': 'serum_creatinine',
+        'creatinine': 'serum_creatinine',
     }
     key = parameter_name.lower() if parameter_name else ''
     model_key = PARAMETER_MODEL_MAP.get(key, key)
     if model_key not in LOADED_MODELS:
         model_path = MODELS_DIR / f"{model_key}_model.joblib"
         if not model_path.exists():
-            return None
-        LOADED_MODELS[model_key] = joblib.load(model_path)
+            return None, None
+        
+        # Load model - could be just model or dict with model + mapping
+        model_data = joblib.load(model_path)
+        if isinstance(model_data, dict) and 'model' in model_data:
+            LOADED_MODELS[model_key] = (model_data['model'], model_data.get('reverse_mapping'))
+        else:
+            LOADED_MODELS[model_key] = (model_data, None)
+    
     return LOADED_MODELS[model_key]
 
 
 def normalize_parameter_name(param):
-    """Normalize a human-readable parameter name to a model key.
-    Attempts to map common frontend labels like 'Hemoglobin (Hb)',
-    'Platelet Count', 'Total WBC count' to internal model keys.
+    """Normalize a human-readable parameter name to internal key supporting 79 parameters.
+    Maps frontend labels to standardized parameter names used in clinical_rules_fallback.
     """
     if not param:
         return param
@@ -88,46 +118,86 @@ def normalize_parameter_name(param):
     import re
     s = re.sub(r"\(.*?\)", "", s)
     s = re.sub(r"[^a-z0-9 ]", " ", s).strip()
-    # keyword matching (handle both American and British spellings)
-    # IMPORTANT: Check most specific patterns first before general ones
-    # MCH and MCHC must be checked BEFORE hemoglobin because they contain "hemoglobin"
+    
+    # IMPORTANT: Check most specific patterns first
+    # CBC Parameters
     if 'mean corpuscular haemoglobin concentration' in s or 'mean corpuscular hemoglobin concentration' in s or 'mchc' in s:
-        return 'mchc'
-    if 'mean corpuscular haemoglobin' in s or 'mean corpuscular hemoglobin' in s or 'mch' in s:
-        return 'mch'
-    if 'mean corpuscular volume' in s or 'mcv' in s:
-        return 'mcv'
-    if 'hemoglobin' in s or 'haemoglobin' in s or s == 'hb':
-        return 'hemoglobin'
-    if 'wbc' in s or 'white' in s or 'total wbc' in s:
-        return 'wbc'
+        return 'mchc_g_dL'
+    if 'mean corpuscular haemoglobin' in s or 'mean corpuscular hemoglobin' in s or s == 'mch':
+        return 'mch_pg'
+    if 'mean corpuscular volume' in s or s == 'mcv':
+        return 'mcv_fL'
+    if 'hemoglobin' in s or 'haemoglobin' in s or s == 'hb' or s == 'hgb':
+        return 'hemoglobin_g_dL'
+    if 'hematocrit' in s or 'haematocrit' in s or 'pcv' in s:
+        return 'hematocrit_percent'
+    if 'wbc' in s or ('white' in s and 'blood' in s) or 'total wbc' in s:
+        return 'wbc_10e9_L'
     if 'platelet' in s:
-        return 'platelet'
+        return 'platelet_count'
+    if 'rbc' in s or ('red' in s and 'blood' in s) or 'red cell count' in s:
+        return 'rbc_count'
     if 'neutrophil' in s:
-        return 'neutrophil'
+        return 'neutrophils_percent'
     if 'lymphocyte' in s:
-        return 'lymphocyte'
-    if 'eosinophil' in s:
-        return 'eosinophil'
-    if 'basophil' in s:
-        return 'basophil'
+        return 'lymphocytes_percent'
     if 'monocyte' in s:
-        return 'monocyte'  # Note: no monocyte model exists, will 404
-    if 'rdw' in s:
-        return 'rdw'
-    if 'rbc' in s or 'red blood' in s or 'red cell' in s:
-        return 'rbc'
-    if 'haematocrit' in s or 'hematocrit' in s or 'pcv' in s:
-        return 'hematocrit'  # Note: no hematocrit model exists, will 404
-    if 'neutrophils' in s:
-        return 'neutrophil'
-    if 'lymphocytes' in s:
-        return 'lymphocyte'
-    # fallback: try exact match to known model files (strip suffixes)
+        return 'monocytes_percent'
+    if 'eosinophil' in s:
+        return 'eosinophils_percent'
+    if 'basophil' in s:
+        return 'basophils_percent'
+    if 'rdw' in s or 'red cell distribution width' in s:
+        return 'rdw_percent'
+    if 'reticulocyte' in s:
+        return 'reticulocyte_count_percent'
+    
+    # Glucose/Diabetes
+    if 'hba1c' in s or 'glycated' in s or 'glycosylated' in s:
+        return 'hba1c_percent'
+    if 'random blood sugar' in s or 'rbs' in s or ('glucose' in s and 'random' in s):
+        return 'random_blood_sugar_mg_dL'
+    if 'estimated average glucose' in s or 'eag' in s:
+        return 'estimated_avg_glucose_mg_dL'
+    
+    # Inflammatory markers
+    if 'esr' in s or 'erythrocyte sedimentation' in s:
+        return 'esr_mm_hr'
+    if 'crp' in s or 'c reactive protein' in s:
+        return 'crp_mg_L'
+    
+    # Kidney function
+    if 'creatinine' in s:
+        return 'serum_creatinine_mg_dL'
+    
+    # Iron studies
+    if 'serum iron' in s:
+        return 'serum_iron_mcg_dL'
+    if 'tibc' in s or 'total iron binding' in s:
+        return 'tibc_mcg_dL'
+    if 'uibc' in s or 'unsaturated iron binding' in s:
+        return 'uibc_mcg_dL'
+    if 'transferrin saturation' in s:
+        return 'transferrin_saturation_percent'
+    if 'ferritin' in s:
+        return 'ferritin_ng_mL'
+    
+    # Vitamins and hormones
+    if 'vitamin b12' in s or 'b12' in s:
+        return 'vitamin_b12_pg_mL'
+    if 'vitamin d' in s:
+        return 'vitamin_d_ng_mL'
+    if 'tsh' in s or 'thyroid stimulating' in s:
+        return 'tsh_mIU_L'
+    if 'cortisol' in s:
+        return 'cortisol_pm_mcg_dL'
+    
+    # Fallback: try exact match to known model files
     for name in LOADED_MODELS.keys():
         if name in s:
             return name
-    # as last resort return original lowercased no-space key
+    
+    # Return cleaned parameter name
     return s.replace(' ', '_')
 
 def preprocess_input(data):
@@ -172,7 +242,11 @@ def preprocess_input(data):
                   'eosinophils_percent', 'basophils_percent', 'rbc_count', 'mcv_fL',
                   'mch_pg', 'mchc_g_dL', 'neutrophils_abs', 'lymphocytes_abs', 'monocytes_abs']:
         # Try otherParameters first, then top-level data, then default to 0
-        features[param] = other_params.get(param, data.get(param, 0))
+        raw_param_value = other_params.get(param, data.get(param, 0))
+        try:
+            features[param] = float(raw_param_value)
+        except (ValueError, TypeError):
+            features[param] = 0.0
     
     # Z-scores (simplified - could be computed from population stats)
     features['hemoglobin_g_dL_zscore'] = 0
@@ -303,7 +377,15 @@ def interpret():
         if not parameter:
             logging.warning("No parameter provided, defaulting to 'hemoglobin'")
             parameter = 'hemoglobin'
-        value = data.get('value', 0)
+        
+        # Convert value to float to ensure numeric comparisons work
+        raw_value = data.get('value', 0)
+        try:
+            value = float(raw_value)
+        except (ValueError, TypeError):
+            logging.warning(f"Could not convert value '{raw_value}' to float, defaulting to 0")
+            value = 0.0
+        
         print("==============================================================")
         logging.info(f"Received parameter: '{parameter}', value: {value}")
         print("==============================================================")
@@ -315,37 +397,81 @@ def interpret():
         # Normalize parameter name from frontend labels to model keys
         normalized_param = normalize_parameter_name(parameter)
         logging.info(f"Normalized parameter name: '{parameter}' -> '{normalized_param}'")
-        # Load model
-        model = get_model(normalized_param)
-        if model is None:
-            logging.error(f"Model for parameter '{normalized_param}' not found (original: '{parameter}')")
-            return jsonify({"error": f"Model for parameter '{normalized_param}' not found", "original_parameter": parameter}), 404
-        print("==============================================================")
-        logging.info(f"Model loaded for: '{normalized_param}' (original: '{parameter}')")
-        print("==============================================================")
-        # Preprocess input
+        
+        # Try loading model first
+        model, reverse_mapping = get_model(normalized_param)
+        use_clinical_fallback = False
+        
+        # Define low-accuracy models that should prefer clinical rules
+        LOW_ACCURACY_MODELS = ['wbc_10e9_L', 'platelet_count', 'rdw_percent']
+        prefer_clinical = normalized_param in LOW_ACCURACY_MODELS
+        
+        if model is None or prefer_clinical:
+            if model is None:
+                logging.warning(f"Model for parameter '{normalized_param}' not found, using clinical rules fallback")
+            else:
+                logging.warning(f"Model for parameter '{normalized_param}' has low accuracy ({normalized_param}), preferring clinical rules")
+            use_clinical_fallback = True
+            # We'll use clinical rules instead of returning 404
+        
+        # Preprocess input for both model and clinical fallback
         features_dict = preprocess_input(data)
         print("==============================================================")
         logging.info(f"Features sent for analysis: {features_dict}")
         print("==============================================================")
-        # Convert to DataFrame matching training features
-        feature_df = pd.DataFrame([features_dict])
-        # Align DataFrame columns to model's expected features
-        try:
-            expected_features = model.get_booster().feature_names
-        except Exception:
-            expected_features = model.feature_names_in_ if hasattr(model, 'feature_names_in_') else list(feature_df.columns)
-        # Reindex to match model's features, fill missing with 0
-        X = feature_df.reindex(columns=expected_features, fill_value=0)
-        # Predict
-        prediction = model.predict(X)[0]
-        proba = model.predict_proba(X)[0]
-        confidence = float(proba[prediction])
-        print("==============================================================")
-        logging.info(f"Prediction class: {prediction}, Confidence: {confidence}")
-        print("==============================================================")
-        # Compute SHAP values (create explainer on-the-fly)
-        try:
+        
+        # Determine prediction using model or clinical rules
+        if use_clinical_fallback:
+            # Use clinical rules for classification
+            gender = data.get('patientGender', 'Male')
+            age = data.get('patientAge', 50)
+            try:
+                prediction, status_label = classify_by_threshold(value, normalized_param, gender, age)
+                confidence = 0.95  # Clinical rules have high confidence
+                logging.info(f"Clinical fallback classification: class={prediction}, status={status_label}")
+            except Exception as e:
+                logging.error(f"Clinical fallback failed: {e}")
+                return jsonify({"error": f"No model or clinical rule available for '{normalized_param}'", "original_parameter": parameter}), 404
+        else:
+            # Use ML model for prediction
+            print("==============================================================")
+            logging.info(f"Model loaded for: '{normalized_param}' (original: '{parameter}')")
+            print("==============================================================")
+            
+            # Convert to DataFrame matching training features
+            feature_df = pd.DataFrame([features_dict])
+            # Align DataFrame columns to model's expected features
+            try:
+                expected_features = model.get_booster().feature_names
+            except Exception:
+                expected_features = model.feature_names_in_ if hasattr(model, 'feature_names_in_') else list(feature_df.columns)
+            # Reindex to match model's features, fill missing with 0
+            X = feature_df.reindex(columns=expected_features, fill_value=0)
+            # Predict
+            prediction_mapped = model.predict(X)[0]
+            
+            # Map back to original class if needed (for RBS/HbA1c with classes [0,2,3])
+            if reverse_mapping:
+                prediction = reverse_mapping[int(prediction_mapped)]
+                logging.info(f"Mapped prediction: {prediction_mapped} -> {prediction}")
+            else:
+                prediction = prediction_mapped
+            
+            proba = model.predict_proba(X)[0]
+            confidence = float(proba[int(prediction_mapped)])  # Use mapped class for probability
+            print("=============================================================")
+            logging.info(f"Model prediction: class={prediction}, confidence={confidence}")
+            print("==============================================================")
+        # Compute SHAP values (create explainer on-the-fly) - skip if using clinical fallback
+        feature_importances = []
+        shap_vals = None
+        feature_names = list(features_dict.keys()) if use_clinical_fallback else list(X.columns)
+        shap_error = None
+        
+        if use_clinical_fallback:
+            logging.info("Skipping SHAP computation (clinical fallback mode)")
+            feature_importances = []  # Clinical rules don't have feature importances
+        else:
             # Prefer TreeExplainer for tree-based models (XGBoost, RandomForest, etc.)
             explainer = None
             explainer_type = None
@@ -485,20 +611,17 @@ def interpret():
             except Exception as inner_e:
                 shap_error = f"SHAP parse error: {inner_e}\n{traceback.format_exc()}"
                 logging.warning(shap_error)
-        except Exception as e:
-            logging.warning(f"SHAP computation failed: {e}")
-            feature_importances = []
-            shap_vals = None
-            feature_names = list(X.columns)
-            # Capture traceback for easier dev debugging (returned in response only in dev)
-            shap_error = f"{str(e)}\n{traceback.format_exc()}"
-        # Generate medical text
+                feature_importances = []
+                shap_vals = None
+        
+        # Generate medical text with patient data for risk assessments
         interpretation = generate_interpretation(
             parameter_name=parameter,
             value=value,
             prediction_status=int(prediction),
             confidence=confidence,
-            feature_importances=feature_importances
+            feature_importances=feature_importances,
+            patient_data=data  # Pass full patient data for risk assessment
         )
         # Add SHAP values and feature names for frontend visualization
         interpretation["shap_values"] = shap_vals
@@ -517,4 +640,16 @@ def interpret():
 if __name__ == '__main__':
     print("Starting Flask XAI API...")
     print(f"Models directory: {MODELS_DIR}")
+    
+    # Log available models at startup
+    print("\n=== Available Models ===")
+    model_files = list(MODELS_DIR.glob("*_model.joblib"))
+    if model_files:
+        for model_file in sorted(model_files):
+            print(f"  ✓ {model_file.name}")
+        print(f"Total: {len(model_files)} models found")
+    else:
+        print("  ⚠️  No models found!")
+    print("=" * 25 + "\n")
+    
     app.run(host='0.0.0.0', port=5001, debug=True)

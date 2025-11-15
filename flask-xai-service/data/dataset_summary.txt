@@ -1,8 +1,0 @@
-Total rows generated or merged: 50103
-Training rows: 45082, Holdout rows: 5021
-hemoglobin_status counts: {0: 40983, 1: 3630, 2: 469}
-wbc_status counts: {0: 33352, 2: 5194, 1: 4611, 3: 1925}
-platelet_status counts: {0: 38911, 1: 4433, 2: 1474, 3: 264}
-neutrophil_status counts: {1: 22890, 0: 15347, 2: 5910, 3: 935}
-lymphocyte_status counts: {0: 19892, 2: 14692, 1: 10478, 3: 20}
-rdw_status counts: {0: 30657, 2: 7240, 1: 7185}

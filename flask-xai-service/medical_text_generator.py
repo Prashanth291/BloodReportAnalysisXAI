@@ -697,10 +697,6 @@ def generate_interpretation(parameter_name, value, prediction_status, confidence
             output["riskAssessments"] = {}
     
     return output
-            "diseaseConditions": template.get("disease_conditions", [])
-        }
-    
-    return output
 
 def generate_shap_explanation(feature_importances):
     """Convert SHAP feature importances to natural language."""

@@ -65,8 +65,32 @@ export const analyzeBloodReport = async (filePath, mimeType) => {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
     const prompt = `You are a medical AI assistant specialized in analyzing blood test reports. 
-    
-Analyze this blood test report image/document and extract ALL medical parameters with their values and units.
+
+Analyze this blood test report image/document and extract medical parameters with their values and units.
+
+**PRIORITY: Complete Blood Count (CBC) parameters are MOST IMPORTANT. Extract these first:**
+- Hemoglobin (Hb/Haemoglobin)
+- WBC (Total WBC Count/White Blood Cells/Leukocytes)
+- Platelets (Platelet Count)
+- Neutrophils (Neutrophil %)
+- Lymphocytes (Lymphocyte %)
+- RBC (Red Blood Cell Count)
+- MCV, MCH, MCHC
+- Hematocrit/PCV
+
+**Then extract other common parameters if present:**
+- Blood Sugar: Glucose (Fasting/Random), HbA1c
+- Kidney: Creatinine, Urea, BUN
+- Inflammatory: ESR, CRP
+- Liver: SGOT, SGPT, Bilirubin
+- Lipid: Cholesterol, LDL, HDL, Triglycerides
+- Thyroid: TSH, T3, T4
+- Electrolytes: Sodium, Potassium, Chloride
+
+**Skip or deprioritize:**
+- Serological tests (Widal, antibody tests)
+- Culture reports
+- Specialized infection markers (unless no CBC found)
 
 Return the response in the following JSON format ONLY (no additional text):
 {
@@ -101,7 +125,7 @@ Extract common blood parameters such as:
 - Electrolytes: Sodium, Potassium, Chloride
 - And any other parameters found in the report
 
-Be thorough and extract all available medical parameters.`;
+**Focus on extracting CBC parameters first as they are most important for analysis.**`;
 
     const imagePart = fileToGenerativePart(filePath, mimeType);
 
@@ -158,8 +182,32 @@ export const analyzePDFReport = async (filePath) => {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
     const prompt = `You are a medical AI assistant specialized in analyzing blood test reports. 
-    
-Analyze this blood test report PDF and extract ALL medical parameters with their values and units.
+
+Analyze this blood test report PDF and extract medical parameters with their values and units.
+
+**PRIORITY: Complete Blood Count (CBC) parameters are MOST IMPORTANT. Extract these first:**
+- Hemoglobin (Hb/Haemoglobin)
+- WBC (Total WBC Count/White Blood Cells/Leukocytes)
+- Platelets (Platelet Count)
+- Neutrophils (Neutrophil %)
+- Lymphocytes (Lymphocyte %)
+- RBC (Red Blood Cell Count)
+- MCV, MCH, MCHC
+- Hematocrit/PCV
+
+**Then extract other common parameters if present:**
+- Blood Sugar: Glucose (Fasting/Random), HbA1c
+- Kidney: Creatinine, Urea, BUN
+- Inflammatory: ESR, CRP
+- Liver: SGOT, SGPT, Bilirubin
+- Lipid: Cholesterol, LDL, HDL, Triglycerides
+- Thyroid: TSH, T3, T4
+- Electrolytes: Sodium, Potassium, Chloride
+
+**Skip or deprioritize:**
+- Serological tests (Widal, antibody tests)
+- Culture reports
+- Specialized infection markers (unless no CBC found)
 
 Return the response in the following JSON format ONLY (no additional text):
 {
@@ -194,7 +242,7 @@ Extract common blood parameters such as:
 - Electrolytes: Sodium, Potassium, Chloride
 - And any other parameters found in the report
 
-Be thorough and extract all available medical parameters.`;
+**Focus on extracting CBC parameters first as they are most important for analysis.**`;
 
     const pdfPart = fileToGenerativePart(filePath, "application/pdf");
 

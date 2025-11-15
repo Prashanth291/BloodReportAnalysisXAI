@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const XAI_API_URL =
-  process.env.REACT_APP_XAI_API_URL || "http://localhost:8000/api/v1";
+  process.env.REACT_APP_XAI_API_URL || "http://localhost:5001/api/v1";
 
 /**
  * Get XAI interpretation for a parameter from Flask API

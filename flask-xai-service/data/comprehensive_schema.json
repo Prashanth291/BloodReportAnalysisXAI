@@ -1,0 +1,978 @@
+{
+  "dataset_name": "Synthetic Medical Laboratory Dataset for XAI",
+  "version": "1.0",
+  "created": "2025-11-14 01:31:19",
+  "random_seed": 42,
+  "total_samples": 110000,
+  "total_features": 79,
+  "columns": [
+    {
+      "name": "sample_id",
+      "type": "string",
+      "description": "Unique sample identifier",
+      "category": "Demographics"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "description": "Data source (synthetic/real)",
+      "category": "Demographics"
+    },
+    {
+      "name": "patientAge",
+      "type": "integer",
+      "description": "Patient age in years (18-90)",
+      "category": "Demographics",
+      "unit": "years"
+    },
+    {
+      "name": "patientGender",
+      "type": "categorical",
+      "description": "Patient gender",
+      "category": "Demographics",
+      "values": [
+        "Male",
+        "Female",
+        "Other"
+      ]
+    },
+    {
+      "name": "patientWeight_kg",
+      "type": "float",
+      "description": "Patient weight",
+      "category": "Demographics",
+      "unit": "kg"
+    },
+    {
+      "name": "region",
+      "type": "categorical",
+      "description": "Geographic region",
+      "category": "Demographics",
+      "values": [
+        "North",
+        "South",
+        "East",
+        "West",
+        "Central",
+        "Urban",
+        "Rural"
+      ]
+    },
+    {
+      "name": "diabetic",
+      "type": "binary",
+      "description": "Diabetes status",
+      "category": "Risk Factors",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "pregnant",
+      "type": "binary",
+      "description": "Pregnancy status",
+      "category": "Risk Factors",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "hypertension",
+      "type": "binary",
+      "description": "Hypertension status",
+      "category": "Risk Factors",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "smoking",
+      "type": "binary",
+      "description": "Smoking status",
+      "category": "Risk Factors",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "alcohol_use",
+      "type": "categorical",
+      "description": "Alcohol use level",
+      "category": "Risk Factors",
+      "values": [
+        0,
+        1,
+        2
+      ],
+      "labels": [
+        "None",
+        "Moderate",
+        "Heavy"
+      ]
+    },
+    {
+      "name": "hemoglobin_g_dL",
+      "type": "float",
+      "description": "Hemoglobin concentration",
+      "category": "CBC",
+      "unit": "g/dL",
+      "normal_range": {
+        "male": [
+          13.5,
+          17.5
+        ],
+        "female": [
+          12.0,
+          15.5
+        ]
+      }
+    },
+    {
+      "name": "rbc_count",
+      "type": "float",
+      "description": "Red blood cell count",
+      "category": "CBC",
+      "unit": "\u00d710\u2076/\u03bcL",
+      "normal_range": {
+        "male": [
+          4.5,
+          5.5
+        ],
+        "female": [
+          4.0,
+          5.0
+        ]
+      }
+    },
+    {
+      "name": "wbc_10e9_L",
+      "type": "float",
+      "description": "White blood cell count",
+      "category": "CBC",
+      "unit": "\u00d710\u2079/L",
+      "normal_range": [
+        4.0,
+        11.0
+      ]
+    },
+    {
+      "name": "platelet_count",
+      "type": "integer",
+      "description": "Platelet count",
+      "category": "CBC",
+      "unit": "\u00d710\u00b3/\u03bcL",
+      "normal_range": [
+        150,
+        400
+      ]
+    },
+    {
+      "name": "hematocrit_percent",
+      "type": "float",
+      "description": "Hematocrit/PCV",
+      "category": "CBC",
+      "unit": "%",
+      "normal_range": {
+        "male": [
+          40,
+          50
+        ],
+        "female": [
+          36,
+          44
+        ]
+      }
+    },
+    {
+      "name": "mcv_fL",
+      "type": "float",
+      "description": "Mean corpuscular volume",
+      "category": "CBC",
+      "unit": "fL",
+      "normal_range": [
+        80,
+        100
+      ]
+    },
+    {
+      "name": "mch_pg",
+      "type": "float",
+      "description": "Mean corpuscular hemoglobin",
+      "category": "CBC",
+      "unit": "pg",
+      "normal_range": [
+        27,
+        33
+      ]
+    },
+    {
+      "name": "mchc_g_dL",
+      "type": "float",
+      "description": "Mean corpuscular hemoglobin concentration",
+      "category": "CBC",
+      "unit": "g/dL",
+      "normal_range": [
+        32,
+        36
+      ]
+    },
+    {
+      "name": "neutrophils_percent",
+      "type": "float",
+      "description": "Neutrophils percentage",
+      "category": "CBC-Differential",
+      "unit": "%",
+      "normal_range": [
+        40,
+        70
+      ]
+    },
+    {
+      "name": "lymphocytes_percent",
+      "type": "float",
+      "description": "Lymphocytes percentage",
+      "category": "CBC-Differential",
+      "unit": "%",
+      "normal_range": [
+        20,
+        40
+      ]
+    },
+    {
+      "name": "monocytes_percent",
+      "type": "float",
+      "description": "Monocytes percentage",
+      "category": "CBC-Differential",
+      "unit": "%",
+      "normal_range": [
+        2,
+        10
+      ]
+    },
+    {
+      "name": "eosinophils_percent",
+      "type": "float",
+      "description": "Eosinophils percentage",
+      "category": "CBC-Differential",
+      "unit": "%",
+      "normal_range": [
+        1,
+        6
+      ]
+    },
+    {
+      "name": "basophils_percent",
+      "type": "float",
+      "description": "Basophils percentage",
+      "category": "CBC-Differential",
+      "unit": "%",
+      "normal_range": [
+        0,
+        2
+      ]
+    },
+    {
+      "name": "neutrophils_abs",
+      "type": "float",
+      "description": "Neutrophils absolute count",
+      "category": "CBC-Differential",
+      "unit": "\u00d710\u2079/L",
+      "normal_range": [
+        2.0,
+        7.5
+      ]
+    },
+    {
+      "name": "lymphocytes_abs",
+      "type": "float",
+      "description": "Lymphocytes absolute count",
+      "category": "CBC-Differential",
+      "unit": "\u00d710\u2079/L",
+      "normal_range": [
+        1.0,
+        4.0
+      ]
+    },
+    {
+      "name": "monocytes_abs",
+      "type": "float",
+      "description": "Monocytes absolute count",
+      "category": "CBC-Differential",
+      "unit": "\u00d710\u2079/L",
+      "normal_range": [
+        0.2,
+        1.0
+      ]
+    },
+    {
+      "name": "neutrophil_lymphocyte_ratio",
+      "type": "float",
+      "description": "Neutrophil to lymphocyte ratio",
+      "category": "CBC-Derived",
+      "normal_range": [
+        1.0,
+        3.0
+      ]
+    },
+    {
+      "name": "rdw_percent",
+      "type": "float",
+      "description": "Red cell distribution width",
+      "category": "CBC",
+      "unit": "%",
+      "normal_range": [
+        11.5,
+        14.5
+      ]
+    },
+    {
+      "name": "reticulocyte_count_percent",
+      "type": "float",
+      "description": "Reticulocyte count",
+      "category": "CBC",
+      "unit": "%",
+      "normal_range": [
+        0.5,
+        2.0
+      ]
+    },
+    {
+      "name": "random_blood_sugar_mg_dL",
+      "type": "integer",
+      "description": "Random blood sugar",
+      "category": "Glucose",
+      "unit": "mg/dL",
+      "normal_range": [
+        70,
+        140
+      ]
+    },
+    {
+      "name": "hba1c_percent",
+      "type": "float",
+      "description": "Glycated hemoglobin",
+      "category": "Glucose",
+      "unit": "%",
+      "normal_range": [
+        4.0,
+        5.7
+      ]
+    },
+    {
+      "name": "estimated_avg_glucose_mg_dL",
+      "type": "integer",
+      "description": "Estimated average glucose (calculated)",
+      "category": "Glucose",
+      "unit": "mg/dL"
+    },
+    {
+      "name": "esr_mm_hr",
+      "type": "integer",
+      "description": "Erythrocyte sedimentation rate",
+      "category": "Inflammatory",
+      "unit": "mm/hr",
+      "normal_range": {
+        "male": [
+          0,
+          20
+        ],
+        "female": [
+          0,
+          30
+        ]
+      }
+    },
+    {
+      "name": "crp_mg_L",
+      "type": "float",
+      "description": "C-reactive protein",
+      "category": "Inflammatory",
+      "unit": "mg/L",
+      "normal_range": [
+        0,
+        10
+      ]
+    },
+    {
+      "name": "serum_creatinine_mg_dL",
+      "type": "float",
+      "description": "Serum creatinine",
+      "category": "Kidney",
+      "unit": "mg/dL",
+      "normal_range": {
+        "male": [
+          0.7,
+          1.3
+        ],
+        "female": [
+          0.6,
+          1.1
+        ]
+      }
+    },
+    {
+      "name": "serum_iron_mcg_dL",
+      "type": "integer",
+      "description": "Serum iron",
+      "category": "Iron",
+      "unit": "mcg/dL",
+      "normal_range": {
+        "male": [
+          65,
+          175
+        ],
+        "female": [
+          50,
+          170
+        ]
+      }
+    },
+    {
+      "name": "tibc_mcg_dL",
+      "type": "integer",
+      "description": "Total iron binding capacity",
+      "category": "Iron",
+      "unit": "mcg/dL",
+      "normal_range": [
+        250,
+        450
+      ]
+    },
+    {
+      "name": "uibc_mcg_dL",
+      "type": "integer",
+      "description": "Unsaturated iron binding capacity (calculated)",
+      "category": "Iron",
+      "unit": "mcg/dL"
+    },
+    {
+      "name": "transferrin_saturation_percent",
+      "type": "float",
+      "description": "Transferrin saturation (calculated)",
+      "category": "Iron",
+      "unit": "%",
+      "normal_range": [
+        20,
+        50
+      ]
+    },
+    {
+      "name": "ferritin_ng_mL",
+      "type": "integer",
+      "description": "Ferritin",
+      "category": "Iron",
+      "unit": "ng/mL",
+      "normal_range": {
+        "male": [
+          30,
+          400
+        ],
+        "female": [
+          15,
+          150
+        ]
+      }
+    },
+    {
+      "name": "vitamin_b12_pg_mL",
+      "type": "integer",
+      "description": "Vitamin B12",
+      "category": "Vitamins",
+      "unit": "pg/mL",
+      "normal_range": [
+        200,
+        900
+      ]
+    },
+    {
+      "name": "vitamin_d_ng_mL",
+      "type": "float",
+      "description": "Vitamin D",
+      "category": "Vitamins",
+      "unit": "ng/mL",
+      "normal_range": [
+        30,
+        100
+      ]
+    },
+    {
+      "name": "tsh_mIU_L",
+      "type": "float",
+      "description": "Thyroid stimulating hormone",
+      "category": "Hormones",
+      "unit": "mIU/L",
+      "normal_range": [
+        0.5,
+        5.0
+      ]
+    },
+    {
+      "name": "cortisol_pm_mcg_dL",
+      "type": "float",
+      "description": "Cortisol (PM)",
+      "category": "Hormones",
+      "unit": "mcg/dL",
+      "normal_range": [
+        3.0,
+        15.0
+      ]
+    },
+    {
+      "name": "typhi_o_titer",
+      "type": "categorical",
+      "description": "Widal test Typhi O",
+      "category": "Infectious",
+      "values": [
+        0,
+        20,
+        40,
+        80,
+        160,
+        320
+      ]
+    },
+    {
+      "name": "typhi_h_titer",
+      "type": "categorical",
+      "description": "Widal test Typhi H",
+      "category": "Infectious",
+      "values": [
+        0,
+        20,
+        40,
+        80,
+        160,
+        320
+      ]
+    },
+    {
+      "name": "paratyphi_ah_titer",
+      "type": "categorical",
+      "description": "Widal test Paratyphi AH",
+      "category": "Infectious",
+      "values": [
+        0,
+        20,
+        40,
+        80,
+        160,
+        320
+      ]
+    },
+    {
+      "name": "paratyphi_bh_titer",
+      "type": "categorical",
+      "description": "Widal test Paratyphi BH",
+      "category": "Infectious",
+      "values": [
+        0,
+        20,
+        40,
+        80,
+        160,
+        320
+      ]
+    },
+    {
+      "name": "urine_volume_mL",
+      "type": "integer",
+      "description": "24-hour urine volume",
+      "category": "Urine",
+      "unit": "mL",
+      "normal_range": [
+        800,
+        2000
+      ]
+    },
+    {
+      "name": "urine_colour",
+      "type": "categorical",
+      "description": "Urine color",
+      "category": "Urine",
+      "values": [
+        "Pale Yellow",
+        "Yellow",
+        "Dark Yellow",
+        "Amber"
+      ]
+    },
+    {
+      "name": "urine_appearance",
+      "type": "categorical",
+      "description": "Urine appearance",
+      "category": "Urine",
+      "values": [
+        "Clear",
+        "Slightly Cloudy",
+        "Cloudy"
+      ]
+    },
+    {
+      "name": "urine_specific_gravity",
+      "type": "float",
+      "description": "Urine specific gravity",
+      "category": "Urine",
+      "normal_range": [
+        1.005,
+        1.025
+      ]
+    },
+    {
+      "name": "urine_albumin",
+      "type": "categorical",
+      "description": "Urine albumin level",
+      "category": "Urine",
+      "values": [
+        "Nil",
+        "Trace",
+        "+",
+        "++",
+        "+++"
+      ]
+    },
+    {
+      "name": "urine_sugar",
+      "type": "categorical",
+      "description": "Urine sugar level",
+      "category": "Urine",
+      "values": [
+        "Nil",
+        "Trace",
+        "+",
+        "++",
+        "+++"
+      ]
+    },
+    {
+      "name": "urine_blood",
+      "type": "categorical",
+      "description": "Urine blood level",
+      "category": "Urine",
+      "values": [
+        "Nil",
+        "Trace",
+        "+",
+        "++",
+        "+++"
+      ]
+    },
+    {
+      "name": "urine_ketone",
+      "type": "categorical",
+      "description": "Urine ketone level",
+      "category": "Urine",
+      "values": [
+        "Nil",
+        "Trace",
+        "+",
+        "++"
+      ]
+    },
+    {
+      "name": "urine_urobilinogen",
+      "type": "categorical",
+      "description": "Urine urobilinogen",
+      "category": "Urine",
+      "values": [
+        "Normal",
+        "Increased"
+      ]
+    },
+    {
+      "name": "urine_nitrite",
+      "type": "categorical",
+      "description": "Urine nitrite test",
+      "category": "Urine",
+      "values": [
+        "Negative",
+        "Positive"
+      ]
+    },
+    {
+      "name": "urine_leucocyte",
+      "type": "categorical",
+      "description": "Urine leucocyte level",
+      "category": "Urine",
+      "values": [
+        "Nil",
+        "Trace",
+        "+",
+        "++",
+        "+++"
+      ]
+    },
+    {
+      "name": "urine_protein",
+      "type": "categorical",
+      "description": "Urine protein level",
+      "category": "Urine",
+      "values": [
+        "Nil",
+        "Trace",
+        "+",
+        "++",
+        "+++"
+      ]
+    },
+    {
+      "name": "hemoglobin_g_dL_zscore",
+      "type": "float",
+      "description": "Hemoglobin z-score",
+      "category": "Derived"
+    },
+    {
+      "name": "wbc_10e9_L_zscore",
+      "type": "float",
+      "description": "WBC z-score",
+      "category": "Derived"
+    },
+    {
+      "name": "platelet_count_zscore",
+      "type": "float",
+      "description": "Platelet z-score",
+      "category": "Derived"
+    },
+    {
+      "name": "hemoglobin_g_dL_outlier",
+      "type": "binary",
+      "description": "Hemoglobin outlier flag (|z|>3)",
+      "category": "Derived",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "wbc_10e9_L_outlier",
+      "type": "binary",
+      "description": "WBC outlier flag (|z|>3)",
+      "category": "Derived",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "platelet_count_outlier",
+      "type": "binary",
+      "description": "Platelet outlier flag (|z|>3)",
+      "category": "Derived",
+      "values": [
+        0,
+        1
+      ]
+    },
+    {
+      "name": "hemoglobin_status",
+      "type": "categorical",
+      "description": "Hemoglobin status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Low",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "wbc_status",
+      "type": "categorical",
+      "description": "WBC status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Low",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "platelet_status",
+      "type": "categorical",
+      "description": "Platelet status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Low",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "neutrophil_status",
+      "type": "categorical",
+      "description": "Neutrophil status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Low",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "lymphocyte_status",
+      "type": "categorical",
+      "description": "Lymphocyte status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Low",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "rdw_status",
+      "type": "categorical",
+      "description": "RDW status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Low",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "rbs_status",
+      "type": "categorical",
+      "description": "RBS status classification",
+      "category": "Status",
+      "values": [
+        0,
+        2,
+        3
+      ],
+      "labels": {
+        "0": "Normal",
+        "2": "High",
+        "3": "Critical"
+      }
+    },
+    {
+      "name": "hba1c_status",
+      "type": "categorical",
+      "description": "HbA1c status classification",
+      "category": "Status",
+      "values": [
+        0,
+        2,
+        3
+      ],
+      "labels": {
+        "0": "Normal",
+        "2": "Prediabetic",
+        "3": "Diabetic"
+      }
+    },
+    {
+      "name": "creatinine_status",
+      "type": "categorical",
+      "description": "Creatinine status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Normal",
+        "Elevated",
+        "High",
+        "Critical"
+      ]
+    },
+    {
+      "name": "esr_status",
+      "type": "categorical",
+      "description": "ESR status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2
+      ],
+      "labels": [
+        "Normal",
+        "Elevated",
+        "High"
+      ]
+    },
+    {
+      "name": "crp_status",
+      "type": "categorical",
+      "description": "CRP status classification",
+      "category": "Status",
+      "values": [
+        0,
+        1,
+        2
+      ],
+      "labels": [
+        "Normal",
+        "Elevated",
+        "High"
+      ]
+    },
+    {
+      "name": "overall_health_risk",
+      "type": "categorical",
+      "description": "Overall health risk assessment",
+      "category": "Target",
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "labels": [
+        "Healthy",
+        "Mild",
+        "Moderate",
+        "Severe"
+      ]
+    }
+  ]
+}

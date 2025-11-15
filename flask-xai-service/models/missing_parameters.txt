@@ -1,7 +1,0 @@
-monocytes
-eosinophils
-basophils
-rbc
-mcv
-mch
-mchc

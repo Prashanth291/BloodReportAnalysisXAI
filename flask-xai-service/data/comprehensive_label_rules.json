@@ -1,0 +1,444 @@
+{
+  "description": "Threshold definitions for all status labels and classifications",
+  "created": "2025-11-14 01:32:02",
+  "rules": {
+    "hemoglobin_status": {
+      "parameter": "hemoglobin_g_dL",
+      "unit": "g/dL",
+      "gender_specific": true,
+      "male": {
+        "0_normal": {
+          "min": 13.5,
+          "max": 17.5
+        },
+        "1_low": {
+          "min": 7.0,
+          "max": 13.5
+        },
+        "2_high": {
+          "min": 17.5,
+          "max": 20.0
+        },
+        "3_critical": {
+          "condition": "<7.0 or >20.0"
+        }
+      },
+      "female": {
+        "0_normal": {
+          "min": 12.0,
+          "max": 15.5
+        },
+        "1_low": {
+          "min": 7.0,
+          "max": 12.0
+        },
+        "2_high": {
+          "min": 15.5,
+          "max": 20.0
+        },
+        "3_critical": {
+          "condition": "<7.0 or >20.0"
+        }
+      }
+    },
+    "wbc_status": {
+      "parameter": "wbc_10e9_L",
+      "unit": "\u00d710\u2079/L",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "min": 4.0,
+          "max": 11.0
+        },
+        "1_low": {
+          "min": 2.0,
+          "max": 4.0
+        },
+        "2_high": {
+          "min": 11.0,
+          "max": 20.0
+        },
+        "3_critical": {
+          "condition": "<2.0 or >20.0"
+        }
+      }
+    },
+    "platelet_status": {
+      "parameter": "platelet_count",
+      "unit": "\u00d710\u00b3/\u03bcL",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "min": 150,
+          "max": 400
+        },
+        "1_low": {
+          "min": 50,
+          "max": 150
+        },
+        "2_high": {
+          "min": 400,
+          "max": 1000
+        },
+        "3_critical": {
+          "condition": "<50 or >1000"
+        }
+      }
+    },
+    "neutrophil_status": {
+      "parameter": "neutrophils_percent",
+      "unit": "%",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "min": 40,
+          "max": 70
+        },
+        "1_low": {
+          "min": 10,
+          "max": 40
+        },
+        "2_high": {
+          "min": 70,
+          "max": 95
+        },
+        "3_critical": {
+          "condition": "<10 or >95"
+        }
+      }
+    },
+    "lymphocyte_status": {
+      "parameter": "lymphocytes_percent",
+      "unit": "%",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "min": 20,
+          "max": 40
+        },
+        "1_low": {
+          "min": 1,
+          "max": 20
+        },
+        "2_high": {
+          "min": 40,
+          "max": 90
+        },
+        "3_critical": {
+          "condition": "<1 or >90"
+        }
+      }
+    },
+    "rdw_status": {
+      "parameter": "rdw_percent",
+      "unit": "%",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "min": 11.5,
+          "max": 14.5
+        },
+        "1_low": {
+          "condition": "<11.5"
+        },
+        "2_high": {
+          "min": 14.5,
+          "max": 20.0
+        },
+        "3_critical": {
+          "condition": ">20.0"
+        }
+      }
+    },
+    "rbs_status": {
+      "parameter": "random_blood_sugar_mg_dL",
+      "unit": "mg/dL",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "condition": "<140"
+        },
+        "2_high": {
+          "min": 140,
+          "max": 200,
+          "label": "Prediabetic"
+        },
+        "3_critical": {
+          "condition": ">200",
+          "label": "Diabetic"
+        }
+      }
+    },
+    "hba1c_status": {
+      "parameter": "hba1c_percent",
+      "unit": "%",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "condition": "<5.7"
+        },
+        "2_prediabetic": {
+          "min": 5.7,
+          "max": 6.5
+        },
+        "3_diabetic": {
+          "condition": "\u22656.5"
+        }
+      }
+    },
+    "creatinine_status": {
+      "parameter": "serum_creatinine_mg_dL",
+      "unit": "mg/dL",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "condition": "<1.2"
+        },
+        "1_elevated": {
+          "min": 1.2,
+          "max": 2.0
+        },
+        "2_high": {
+          "min": 2.0,
+          "max": 3.0
+        },
+        "3_critical": {
+          "condition": ">3.0"
+        }
+      }
+    },
+    "esr_status": {
+      "parameter": "esr_mm_hr",
+      "unit": "mm/hr",
+      "gender_specific": true,
+      "male": {
+        "0_normal": {
+          "condition": "\u226420"
+        },
+        "1_elevated": {
+          "min": 20,
+          "max": 50
+        },
+        "2_high": {
+          "condition": ">50"
+        }
+      },
+      "female": {
+        "0_normal": {
+          "condition": "\u226430"
+        },
+        "1_elevated": {
+          "min": 30,
+          "max": 50
+        },
+        "2_high": {
+          "condition": ">50"
+        }
+      }
+    },
+    "crp_status": {
+      "parameter": "crp_mg_L",
+      "unit": "mg/L",
+      "gender_specific": false,
+      "thresholds": {
+        "0_normal": {
+          "condition": "<10"
+        },
+        "1_elevated": {
+          "min": 10,
+          "max": 50
+        },
+        "2_high": {
+          "condition": ">50"
+        }
+      }
+    },
+    "overall_health_risk": {
+      "description": "Composite risk assessment based on all abnormal parameters",
+      "logic": {
+        "0_healthy": "All parameters normal",
+        "1_mild": "1-2 abnormal parameters, no critical values",
+        "2_moderate": "3+ abnormal parameters OR 1 critical value",
+        "3_severe": "2+ critical values OR severe disease pattern"
+      },
+      "parameters_considered": [
+        "hemoglobin_status",
+        "wbc_status",
+        "platelet_status",
+        "neutrophil_status",
+        "lymphocyte_status",
+        "rdw_status",
+        "rbs_status",
+        "hba1c_status",
+        "creatinine_status",
+        "esr_status",
+        "crp_status"
+      ]
+    }
+  },
+  "clinical_interpretations": {
+    "anemia_types": {
+      "iron_deficiency": {
+        "indicators": [
+          "Low Hb",
+          "Low MCV (<80)",
+          "Low MCH",
+          "Low Ferritin (<30)",
+          "High TIBC",
+          "High RDW (>14.5)"
+        ],
+        "description": "Microcytic hypochromic anemia"
+      },
+      "b12_folate_deficiency": {
+        "indicators": [
+          "Low Hb",
+          "High MCV (>100)",
+          "Low B12 (<200)"
+        ],
+        "description": "Macrocytic anemia"
+      },
+      "chronic_disease": {
+        "indicators": [
+          "Low Hb",
+          "Normal MCV",
+          "High CRP/ESR",
+          "Normal/Low Ferritin"
+        ],
+        "description": "Anemia of chronic inflammation"
+      }
+    },
+    "infection_types": {
+      "bacterial": {
+        "indicators": [
+          "High WBC (>11)",
+          "High Neutrophils (>70%)",
+          "High CRP (>10)",
+          "High ESR",
+          "NLR >5"
+        ],
+        "description": "Likely bacterial infection"
+      },
+      "viral": {
+        "indicators": [
+          "Normal/Low WBC",
+          "High Lymphocytes (>40%)",
+          "Moderate CRP",
+          "NLR <1"
+        ],
+        "description": "Likely viral infection"
+      },
+      "typhoid": {
+        "indicators": [
+          "Positive Widal (\u226580)",
+          "High ESR",
+          "Variable WBC"
+        ],
+        "description": "Typhoid fever (Widal positive)"
+      }
+    },
+    "diabetes": {
+      "normal": {
+        "RBS": "<140",
+        "HbA1c": "<5.7"
+      },
+      "prediabetic": {
+        "RBS": "140-200",
+        "HbA1c": "5.7-6.4"
+      },
+      "diabetic": {
+        "RBS": ">200",
+        "HbA1c": "\u22656.5"
+      },
+      "complications": [
+        "Microalbuminuria",
+        "High Creatinine",
+        "High WBC",
+        "High CRP"
+      ]
+    },
+    "kidney_disease": {
+      "stages": {
+        "normal": {
+          "creatinine": "<1.2",
+          "eGFR": ">90"
+        },
+        "mild": {
+          "creatinine": "1.2-2.0",
+          "eGFR": "60-89"
+        },
+        "moderate": {
+          "creatinine": "2.0-3.0",
+          "eGFR": "30-59"
+        },
+        "severe": {
+          "creatinine": ">3.0",
+          "eGFR": "<30"
+        }
+      },
+      "associated_findings": [
+        "Low Hb (CKD anemia)",
+        "Proteinuria",
+        "High K+"
+      ]
+    },
+    "cardiovascular_risk": {
+      "nlr": {
+        "normal": "<3.0",
+        "moderate_risk": "3.0-5.0",
+        "high_risk": ">5.0"
+      },
+      "rdw": {
+        "normal": "11.5-14.5",
+        "increased_risk": ">14.5"
+      },
+      "crp": {
+        "low_risk": "<1.0",
+        "moderate_risk": "1.0-3.0",
+        "high_risk": ">3.0"
+      }
+    }
+  },
+  "xai_feature_importance_guide": {
+    "high_priority_features": [
+      "hemoglobin_g_dL",
+      "wbc_10e9_L",
+      "platelet_count",
+      "hba1c_percent",
+      "random_blood_sugar_mg_dL",
+      "serum_creatinine_mg_dL",
+      "neutrophil_lymphocyte_ratio",
+      "crp_mg_L",
+      "esr_mm_hr"
+    ],
+    "derived_features": [
+      "neutrophil_lymphocyte_ratio",
+      "transferrin_saturation_percent",
+      "estimated_avg_glucose_mg_dL"
+    ],
+    "correlation_groups": {
+      "anemia_markers": [
+        "hemoglobin_g_dL",
+        "rbc_count",
+        "mcv_fL",
+        "ferritin_ng_mL",
+        "rdw_percent"
+      ],
+      "infection_markers": [
+        "wbc_10e9_L",
+        "neutrophils_percent",
+        "crp_mg_L",
+        "esr_mm_hr"
+      ],
+      "diabetes_markers": [
+        "random_blood_sugar_mg_dL",
+        "hba1c_percent",
+        "urine_sugar"
+      ],
+      "kidney_markers": [
+        "serum_creatinine_mg_dL",
+        "urine_protein",
+        "urine_albumin"
+      ]
+    }
+  }
+}
