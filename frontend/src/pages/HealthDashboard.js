@@ -102,9 +102,9 @@ const HealthDashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="card glass max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
               className="w-8 h-8 text-red-600"
               fill="none"
@@ -119,11 +119,11 @@ const HealthDashboard = () => {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
+          <h2 className="text-2xl font-bold gradient-text mb-2">Error</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+            className="btn-primary"
           >
             Retry
           </button>
@@ -134,9 +134,9 @@ const HealthDashboard = () => {
 
   if (!latestReport) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="card glass max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
               className="w-8 h-8 text-blue-600"
               fill="none"
@@ -151,7 +151,7 @@ const HealthDashboard = () => {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold gradient-text mb-2">
             No Reports Yet
           </h2>
           <p className="text-gray-600 mb-6">
@@ -159,7 +159,7 @@ const HealthDashboard = () => {
           </p>
           <Link
             to="/analysis"
-            className="inline-block px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
+            className="btn-primary inline-block"
           >
             Upload Report
           </Link>
@@ -173,11 +173,11 @@ const HealthDashboard = () => {
   const categoryGroups = getCategoryGroups();
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="mb-8 fade-in">
+          <h1 className="text-3xl font-bold gradient-text mb-2">
             Health Dashboard
           </h1>
           <p className="text-gray-600">
@@ -188,7 +188,7 @@ const HealthDashboard = () => {
 
         {/* Alerts Section */}
         {abnormalParams.length > 0 && (
-          <div className="mb-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+          <div className="mb-8 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 p-6 rounded-xl shadow-sm slide-up">
             <div className="flex items-start">
               <svg
                 className="w-6 h-6 text-yellow-600 mr-3 flex-shrink-0 mt-0.5"
@@ -230,8 +230,8 @@ const HealthDashboard = () => {
         )}
 
         {/* Key Parameters Grid */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="mb-12 fade-in">
+          <h2 className="text-2xl font-bold gradient-text mb-6">
             Key Parameters
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -247,8 +247,8 @@ const HealthDashboard = () => {
         </div>
 
         {/* Category Analysis */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="mb-12 fade-in">
+          <h2 className="text-2xl font-bold gradient-text mb-6">
             Category-wise Analysis
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,41 +11,151 @@
 
   body {
     @apply m-0 antialiased min-h-screen;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
       "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
       "Helvetica Neue", sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+    color: #1e293b;
   }
 
   code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-      monospace;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 10px;
+    border: 2px solid #f1f5f9;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   }
 }
 
 @layer components {
-  /* Blood-themed Loading Spinner */
-  .blood-spinner {
-    @apply relative w-16 h-16;
+  /* Modern Card Styles */
+  .card {
+    @apply bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100;
   }
-
-  .blood-spinner::before,
-  .blood-spinner::after {
-    content: "";
-    @apply absolute inset-0 rounded-full border-4 border-transparent;
-    border-top-color: #f43f5e;
-    border-right-color: #f43f5e;
-    animation: spin 1.5s linear infinite;
+  
+  .card-hover {
+    @apply hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300;
   }
-
-  .blood-spinner::after {
-    @apply border-2;
-    animation: spin 2s linear infinite reverse;
-  }
-
+  
   /* Glass morphism effect */
   .glass {
-    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+    @apply bg-white/80 backdrop-blur-xl border border-gray-200/50 shadow-sm;
+  }
+  
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-slate-700/50;
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent font-bold;
+  }
+  
+  /* Button Styles */
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-300 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-white border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 font-semibold rounded-xl transition-all duration-300 active:scale-95;
+  }
+  
+  .btn-ghost {
+    @apply px-6 py-3 bg-transparent hover:bg-gray-50 text-gray-700 hover:text-indigo-600 font-semibold rounded-xl transition-all duration-300;
+  }
+  
+  /* Input Styles */
+  .input-modern {
+    @apply w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:bg-white transition-all duration-300 outline-none text-gray-900 placeholder-gray-400;
+  }
+  
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide;
+  }
+  
+  .badge-success {
+    @apply bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200;
+  }
+  
+  .badge-warning {
+    @apply bg-amber-100 text-amber-700 ring-1 ring-amber-200;
+  }
+  
+  .badge-danger {
+    @apply bg-rose-100 text-rose-700 ring-1 ring-rose-200;
+  }
+  
+  .badge-info {
+    @apply bg-sky-100 text-sky-700 ring-1 ring-sky-200;
+  }
+  
+  /* Status indicators */
+  .status-dot {
+    @apply w-2.5 h-2.5 rounded-full shadow-sm;
+  }
+  
+  .status-dot-success {
+    @apply bg-emerald-500;
+  }
+  
+  .status-dot-warning {
+    @apply bg-amber-500;
+  }
+  
+  .status-dot-danger {
+    @apply bg-rose-500;
+  }
+  
+  /* Loading Spinner */
+  .spinner {
+    @apply animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600;
+  }
+  
+  /* Skeleton Loading */
+  .skeleton {
+    @apply animate-pulse bg-gray-100 rounded-lg;
+  }
+  
+  /* Hover Effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
+  }
+  
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105 active:scale-95;
+  }
+  
+  /* Section Container */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Floating Action Button */
+  .fab {
+    @apply fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 hover:scale-110 active:scale-95;
   }
 }
 

@@ -48,12 +48,12 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 fade-in">
           <div className="flex justify-center mb-4">
-            <div className="bg-primary-600 p-4 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-indigo-600 to-violet-600 p-4 rounded-xl shadow-lg">
               <svg
                 className="w-10 h-10 text-white"
                 viewBox="0 0 24 24"
@@ -63,12 +63,12 @@ const Login = () => {
               </svg>
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
+          <h2 className="text-3xl font-bold gradient-text">Welcome Back</h2>
           <p className="mt-2 text-gray-600">Login to access your dashboard</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="card glass slide-up">
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
               {error}
@@ -89,7 +89,7 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="input-modern"
                 placeholder="john@example.com"
               />
             </div>
@@ -107,7 +107,7 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="input-modern"
                 placeholder="••••••••"
               />
             </div>
@@ -115,7 +115,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+              className="btn-primary w-full"
             >
               {loading ? "Logging in..." : "Login"}
             </button>

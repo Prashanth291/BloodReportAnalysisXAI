@@ -7,48 +7,45 @@ const Home = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative z-10 pt-32 pb-20 px-4">
+      <div className="relative z-10 pt-24 pb-32 px-4 fade-in bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            {/* Icon */}
-            <div className="flex justify-center mb-8">
-              <div className="bg-gradient-to-br from-primary-500 to-indigo-600 p-5 rounded-2xl shadow-xl">
-                <svg
-                  className="w-16 h-16 text-white"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-              </div>
+            {/* Badge */}
+            <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full mb-8">
+              <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span className="text-sm font-semibold text-blue-700">Next-Gen Health Platform</span>
             </div>
 
             {/* Title */}
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Explainable AI-Based
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+              Transform Health Insights
               <br />
-              <span className="bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent">
-                Blood Test Analysis
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Empower Success
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
-              Transform your blood test reports into clear, actionable health
-              insights with the power of Artificial Intelligence
+            <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+              The all-in-one Blood Test Analysis System that brings clarity and understanding together.
+            </p>
+            <p className="text-lg md:text-xl font-semibold text-blue-600 mb-12">
+              Analyze. Understand. Excel.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               {user ? (
                 <>
                   <Link
                     to="/analysis"
-                    className="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
                   >
-                    <span>Upload New Report</span>
+                    <span>Start Analysis Free</span>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -65,18 +62,18 @@ const Home = () => {
                   </Link>
                   <Link
                     to="/dashboard"
-                    className="px-8 py-4 bg-white border-2 border-gray-200 hover:border-primary-600 text-gray-700 hover:text-primary-600 rounded-lg font-semibold text-lg transition-all duration-300"
+                    className="px-8 py-4 bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-xl font-semibold text-lg transition-all duration-300"
                   >
-                    View Dashboard
+                    View Dashboard →
                   </Link>
                 </>
               ) : (
                 <>
                   <Link
                     to="/register"
-                    className="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
                   >
-                    <span>Get Started</span>
+                    <span>Start Learning Free</span>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -93,12 +90,34 @@ const Home = () => {
                   </Link>
                   <Link
                     to="/login"
-                    className="px-8 py-4 bg-white border-2 border-gray-200 hover:border-primary-600 text-gray-700 hover:text-primary-600 rounded-lg font-semibold text-lg transition-all duration-300"
+                    className="px-8 py-4 bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-xl font-semibold text-lg transition-all duration-300"
                   >
-                    Login
+                    Sign In →
                   </Link>
                 </>
               )}
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap justify-center items-center gap-6 text-sm">
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium text-gray-700">100% Free</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium text-gray-700">No Credit Card</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium text-gray-700">Instant Access</span>
+              </div>
             </div>
           </div>
         </div>
@@ -109,9 +128,12 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Key Features
+              Powerful Features
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-indigo-600 mx-auto rounded-full"></div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              Everything you need to understand and track your blood test results
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-indigo-600 to-violet-600 mx-auto rounded-full"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -134,7 +156,7 @@ const Home = () => {
                 ),
                 title: "Multi-Format Support",
                 description:
-                  "Upload blood test reports in JPG, PNG, or PDF format",
+                  "Upload blood test reports in JPG, PNG, or PDF format. Our AI handles various lab report formats",
                 color: "from-blue-500 to-cyan-500",
               },
               {
@@ -153,10 +175,31 @@ const Home = () => {
                     />
                   </svg>
                 ),
-                title: "AI-Powered Analysis",
+                title: "Gemini AI Analysis",
                 description:
-                  "Advanced Gemini AI extracts and interprets medical parameters",
+                  "Advanced Google Gemini AI extracts and interprets 79+ medical parameters with high accuracy",
                 color: "from-purple-500 to-pink-500",
+              },
+              {
+                icon: (
+                  <svg
+                    className="w-8 h-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                ),
+                title: "XGBoost ML Models",
+                description:
+                  "Powered by XGBoost machine learning trained on 100,000+ samples for accurate predictions",
+                color: "from-yellow-500 to-orange-500",
               },
               {
                 icon: (
@@ -174,9 +217,9 @@ const Home = () => {
                     />
                   </svg>
                 ),
-                title: "Clear Visualizations",
+                title: "SHAP Explainability",
                 description:
-                  "Understand your health data with intuitive charts and graphs",
+                  "SHAP values provide transparent explanations showing which factors influence your results",
                 color: "from-green-500 to-emerald-500",
               },
               {
@@ -195,8 +238,8 @@ const Home = () => {
                     />
                   </svg>
                 ),
-                title: "Abnormality Detection",
-                description: "Automatic flagging of out-of-range values",
+                title: "Smart Abnormality Detection",
+                description: "Automatic flagging of out-of-range values with severity indicators and clinical context",
                 color: "from-orange-500 to-red-500",
               },
               {
@@ -211,14 +254,14 @@ const Home = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                     />
                   </svg>
                 ),
-                title: "Explainable AI",
+                title: "Trend Analysis",
                 description:
-                  "Transparent, human-friendly explanations of findings",
-                color: "from-yellow-500 to-orange-500",
+                  "Track parameter changes over time with interactive charts and identify patterns in your health",
+                color: "from-indigo-500 to-purple-500",
               },
               {
                 icon: (
@@ -232,19 +275,62 @@ const Home = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                     />
                   </svg>
                 ),
-                title: "Long-term Tracking",
+                title: "Clinical Interpretations",
                 description:
-                  "Monitor health trends over time with secure storage",
-                color: "from-indigo-500 to-purple-500",
+                  "Receive detailed explanations of what your results mean in plain language",
+                color: "from-teal-500 to-cyan-500",
+              },
+              {
+                icon: (
+                  <svg
+                    className="w-8 h-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                ),
+                title: "Personalized Insights",
+                description:
+                  "Get recommendations tailored to your age, gender, and medical history",
+                color: "from-rose-500 to-pink-500",
+              },
+              {
+                icon: (
+                  <svg
+                    className="w-8 h-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                ),
+                title: "Secure & Private",
+                description:
+                  "Your health data is encrypted and stored securely with industry-standard protection",
+                color: "from-gray-600 to-gray-800",
               },
             ].map((feature, index) => (
               <div
                 key={index}
-                className="group bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+                className="card hover-lift group slide-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div
                   className={`inline-flex items-center justify-center w-14 h-14 rounded-lg bg-gradient-to-br ${feature.color} text-white mb-6 group-hover:scale-110 transition-transform`}
@@ -263,14 +349,158 @@ const Home = () => {
         </div>
       </div>
 
-      {/* How It Works Section */}
-      <div className="py-20 px-4 bg-gray-50">
+      {/* Technology Stack Section */}
+      <div className="py-20 px-4 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Built with Cutting-Edge Technology
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our platform combines the latest AI and machine learning technologies
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="card hover-lift">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mr-4">
+                  AI
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">Google Gemini AI</h3>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Advanced language model for accurate text extraction and medical interpretation from complex lab reports
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">79+ parameter extraction capability</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Natural language report generation</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Clinical context understanding</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card hover-lift">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mr-4">
+                  ML
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">XGBoost Models</h3>
+              </div>
+              <p className="text-gray-600 mb-4">
+                State-of-the-art gradient boosting trained on extensive medical datasets
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">100,000+ training samples</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">High accuracy predictions</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Real-time analysis</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card hover-lift">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mr-4">
+                  XAI
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">SHAP Explainability</h3>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Transparent AI explanations showing exactly how conclusions are reached
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Feature importance visualization</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Impact analysis for each parameter</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Trustworthy AI decisions</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card hover-lift">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mr-4">
+                  DB
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">Secure Storage</h3>
+              </div>
+              <p className="text-gray-600 mb-4">
+                MongoDB database with encrypted storage and secure authentication
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">JWT-based authentication</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">Encrypted data transmission</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">HIPAA-compliant security</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* How It Works Section */}
+      <div className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 fade-in">
+            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
               How It Works
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-indigo-600 mx-auto rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-indigo-500 to-violet-600 mx-auto rounded-full"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -356,10 +586,10 @@ const Home = () => {
                 ),
               },
             ].map((step, index) => (
-              <div key={index} className="relative">
-                <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
+              <div key={index} className="relative slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="card hover-lift">
                   {/* Step Number */}
-                  <div className="flex items-center justify-center w-14 h-14 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-full text-white text-2xl font-bold shadow-lg">
+                  <div className="flex items-center justify-center w-14 h-14 mx-auto mb-6 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full text-white text-2xl font-bold shadow-sm">
                     {step.number}
                   </div>
 
@@ -368,7 +598,7 @@ const Home = () => {
                     {step.icon}
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+                  <h3 className="text-xl font-bold gradient-text mb-3 text-center">
                     {step.title}
                   </h3>
                   <p className="text-gray-600 text-center leading-relaxed">
@@ -382,7 +612,7 @@ const Home = () => {
       </div>
 
       {/* Footer CTA */}
-      <div className="py-20 px-4 bg-gradient-to-br from-primary-600 to-indigo-700">
+      <div className="py-20 px-4 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-600 fade-in">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Get Started?
@@ -393,7 +623,7 @@ const Home = () => {
           {!user && (
             <Link
               to="/register"
-              className="inline-flex items-center px-10 py-4 bg-white text-primary-600 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 space-x-3"
+              className="inline-flex items-center px-10 py-4 bg-white text-indigo-600 hover:text-indigo-700 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 space-x-3 active:scale-95"
             >
               <span>Create Free Account</span>
               <svg

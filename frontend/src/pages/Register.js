@@ -66,23 +66,23 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 fade-in">
           <div className="flex justify-center mb-4">
-            <div className="bg-primary-600 p-4 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-indigo-600 to-violet-600 p-4 rounded-xl shadow-lg">
               <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
+          <h2 className="text-3xl font-bold gradient-text">Create Account</h2>
           <p className="mt-2 text-gray-600">Join us to analyze your blood reports</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="card glass slide-up">
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
               {error}
@@ -106,7 +106,7 @@ const Register = () => {
                 type="text"
                 value={name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="input-modern"
                 placeholder="John Doe"
               />
             </div>
@@ -121,7 +121,7 @@ const Register = () => {
                 type="email"
                 value={email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="input-modern"
                 placeholder="john@example.com"
               />
             </div>
@@ -136,7 +136,7 @@ const Register = () => {
                 type="password"
                 value={password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="input-modern"
                 placeholder="••••••••"
               />
             </div>
@@ -151,7 +151,7 @@ const Register = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="input-modern"
                 placeholder="••••••••"
               />
             </div>
@@ -159,7 +159,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+              className="btn-primary w-full"
             >
               {loading ? "Creating Account..." : "Create Account"}
             </button>

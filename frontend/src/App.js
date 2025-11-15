@@ -23,10 +23,10 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
           <Navbar />
-          {/* Add padding-top to account for fixed navbar */}
-          <div className="pt-20">
+          {/* Add padding-top to account for fixed navbar - increased for better spacing */}
+          <div className="pt-24">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/register" element={<Register />} />

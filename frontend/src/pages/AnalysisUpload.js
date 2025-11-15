@@ -108,12 +108,12 @@ const AnalysisUpload = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-8 fade-in">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-4 rounded-2xl shadow-lg">
+            <div className="bg-gradient-to-br from-indigo-600 to-violet-600 p-4 rounded-2xl shadow-lg">
               <svg
                 className="w-12 h-12 text-white"
                 fill="none"
@@ -129,7 +129,7 @@ const AnalysisUpload = () => {
               </svg>
             </div>
           </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+          <h1 className="text-4xl font-extrabold gradient-text mb-2">
             Upload Blood Report
           </h1>
           <p className="text-lg text-gray-600">
@@ -138,7 +138,7 @@ const AnalysisUpload = () => {
         </div>
 
         {/* Upload Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 animate-scale-in">
+        <div className="card glass scale-in">
           {!result ? (
             <form onSubmit={handleSubmit}>
               {/* Drag & Drop Area */}
