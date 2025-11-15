@@ -862,54 +862,6 @@ COMPREHENSIVE_TEMPLATES = {
     # DIABETES & GLUCOSE - 3 parameters
     # ═══════════════════════════════════════════════════════════════
     
-    "fasting_blood_sugar_mg_dL": {
-        "parameter_name": "Fasting Blood Sugar (FBS)",
-        "unit": "mg/dL",
-        "reference_ranges": {
-            "all": {"normal": [70, 100], "prediabetic": [100, 126], "diabetic": [126, 400], "critical": [0, 50, 400, 1000]}
-        },
-        "Normal": {
-            "intro": "Your Fasting Blood Sugar is normal.",
-            "general": "No diabetes detected.",
-            "detailed": ["Excellent glucose control"],
-            "recommendations": ["Continue healthy lifestyle", "Annual screening"]
-        },
-        "Prediabetic": {
-            "intro": "Your Fasting Blood Sugar indicates prediabetes.",
-            "general": "Increased risk of developing diabetes.",
-            "abnormal_primary": "Impaired Fasting Glucose (Prediabetes)",
-            "potential_causes": ["Insulin resistance", "Obesity", "Sedentary lifestyle"],
-            "disease_conditions": ["Prediabetes", "Metabolic syndrome"],
-            "recommendations": [
-                "Lifestyle modification critical",
-                "Weight loss 5-10%",
-                "Exercise 150 min/week",
-                "Low glycemic diet",
-                "Repeat FBS in 3-6 months"
-            ]
-        },
-        "Diabetic": {
-            "intro": "Your Fasting Blood Sugar confirms diabetes.",
-            "general": "Diagnostic for diabetes mellitus.",
-            "abnormal_primary": "Diabetes Mellitus",
-            "potential_causes": ["Type 2 diabetes", "Type 1 diabetes", "Pancreatic disease"],
-            "disease_conditions": ["Diabetes mellitus"],
-            "recommendations": [
-                "Urgent endocrinology consultation",
-                "Start diabetes medication",
-                "Blood sugar monitoring",
-                "Diabetes education",
-                "Screen for complications"
-            ]
-        },
-        "Critical": {
-            "intro": "Critical blood sugar level.",
-            "general": "Medical emergency.",
-            "abnormal_primary": "Critical Glucose Level",
-            "recommendations": ["SEEK IMMEDIATE MEDICAL ATTENTION"]
-        }
-    },
-    
     "random_blood_sugar_mg_dL": {
         "parameter_name": "Random Blood Sugar (RBS)",
         "unit": "mg/dL",

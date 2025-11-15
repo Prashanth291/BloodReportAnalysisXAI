@@ -785,11 +785,65 @@ def interpret():
                 
                 logging.info(f"✅ Extracted {len(feature_importances)} feature importances using alternative methods")
         
+        # Use frontend's clinical status if available, otherwise use model prediction
+        # Frontend status is based on reference ranges and is more clinically accurate
+        frontend_status = data.get('status', '').lower() if data.get('status') else None
+        
+        # Map frontend status to numeric codes for template lookup
+        status_mapping = {
+            'normal': 0,
+            'low': 1,
+            'high': 2,
+            'critical': 3
+        }
+        
+        # Determine the status to use for interpretation
+        final_status = int(prediction)  # Default to model prediction
+        
+        if frontend_status:
+            if frontend_status == 'abnormal':
+                # Frontend says abnormal but didn't specify low/high
+                # Try to determine from reference range and value
+                ref_range = data.get('reference_range', '')
+                try:
+                    # Try to parse reference range to determine if value is low or high
+                    # Common formats: "12.0 - 15.0", "12-15", "Female: 12.0 - 15.0"
+                    import re
+                    range_match = re.search(r'(\d+\.?\d*)\s*-\s*(\d+\.?\d*)', str(ref_range))
+                    if range_match:
+                        min_val = float(range_match.group(1))
+                        max_val = float(range_match.group(2))
+                        if value < min_val:
+                            final_status = 1  # Low
+                            logging.info(f"Frontend 'abnormal' + value {value} < min {min_val} → Low (1)")
+                        elif value > max_val:
+                            final_status = 2  # High
+                            logging.info(f"Frontend 'abnormal' + value {value} > max {max_val} → High (2)")
+                        else:
+                            # Value in range but marked abnormal - trust model
+                            logging.info(f"Frontend 'abnormal' but value {value} in range [{min_val}-{max_val}] - using model prediction: {final_status}")
+                    else:
+                        logging.info(f"Frontend 'abnormal' but couldn't parse reference range '{ref_range}' - using model prediction: {final_status}")
+                except Exception as e:
+                    logging.warning(f"Error parsing reference range: {e} - using model prediction: {final_status}")
+            elif frontend_status in status_mapping:
+                # Frontend specified exact status (normal/low/high/critical)
+                final_status = status_mapping[frontend_status]
+                if final_status != int(prediction):
+                    logging.warning(f"Frontend clinical status '{frontend_status}' ({final_status}) differs from model prediction ({int(prediction)}) - USING CLINICAL STATUS")
+                else:
+                    logging.info(f"Frontend status '{frontend_status}' matches model prediction: {final_status}")
+            else:
+                logging.info(f"Unknown frontend status '{frontend_status}' - using model prediction: {final_status}")
+        else:
+            logging.info(f"No frontend status - using model prediction: {final_status}")
+        
         # Generate medical text with patient data for risk assessments
+        # IMPORTANT: Use normalized_param for template lookup
         interpretation = generate_interpretation(
-            parameter_name=parameter,
+            parameter_name=normalized_param,  # Use normalized name for template matching
             value=value,
-            prediction_status=int(prediction),
+            prediction_status=final_status,
             confidence=confidence,
             feature_importances=feature_importances,
             patient_data=data  # Pass full patient data for risk assessment

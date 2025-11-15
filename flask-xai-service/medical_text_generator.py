@@ -644,24 +644,48 @@ def generate_interpretation(parameter_name, value, prediction_status, confidence
     else:
         status_label = prediction_status  # Already a string like "Prediabetic"
     
+    print("==============================================================")
+    print(f"🔍 GENERATE_INTERPRETATION CALLED:")
+    print(f"   Parameter: {parameter_name}")
+    print(f"   Value: {value}")
+    print(f"   Prediction Status (input): {prediction_status}")
+    print(f"   Status Label: {status_label}")
+    print(f"   Confidence: {confidence}")
+    print("==============================================================")
+    
     # Try comprehensive templates first
     template = None
     if USE_COMPREHENSIVE_TEMPLATES:
         template = get_template(parameter_name, status_label)
+        if template:
+            print(f"✅ Found comprehensive template for '{parameter_name}' + '{status_label}'")
+        else:
+            print(f"⚠️ No comprehensive template for '{parameter_name}' + '{status_label}'")
     
     # Fallback to legacy templates
     if not template:
         legacy_template_key = parameter_name.replace('_g_dL', '').replace('_10e9_L', '').replace('_count', '').replace('_percent', '').replace('_mg_dL', '').replace('_mcg_dL', '').replace('_ng_mL', '').replace('_mIU_L', '').replace('_mm_hr', '').replace('_mg_L', '').replace('_fL', '').replace('_pg', '')
         template = TEMPLATES.get(legacy_template_key, {}).get(status_label, {})
+        if template:
+            print(f"✅ Found legacy template for '{legacy_template_key}' + '{status_label}'")
+        else:
+            print(f"⚠️ No legacy template for '{legacy_template_key}' + '{status_label}'")
     
     if not template:
         # Ultimate fallback generic template
+        print(f"❌ NO TEMPLATE FOUND - Using generic fallback")
         template = {
             "intro": f"Your {parameter_name} level is {value}.",
             "general": f"Status: {status_label}",
             "detailed": [],
             "recommendations": ["Consult your healthcare provider for interpretation"]
         }
+    else:
+        print(f"📝 Template keys: {list(template.keys())}")
+        if 'potential_causes' in template:
+            print(f"   potential_causes: {len(template.get('potential_causes', []))} items")
+        if 'disease_conditions' in template:
+            print(f"   disease_conditions: {len(template.get('disease_conditions', []))} items")
     
     # Build explainability section
     explainability = {
