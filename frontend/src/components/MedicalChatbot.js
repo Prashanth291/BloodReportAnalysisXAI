@@ -151,7 +151,7 @@ const MedicalChatbot = ({ reportData = null }) => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col z-[9999] animate-scale-in">
+        <div className="fixed top-20 right-6 w-96 h-[calc(100vh-7rem)] bg-white rounded-2xl shadow-2xl flex flex-col z-[9999] animate-scale-in">
           {/* Header */}
           <div className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-3">

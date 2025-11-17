@@ -107,7 +107,7 @@ const Register = () => {
                 value={name}
                 onChange={handleChange}
                 className="input-modern"
-                placeholder="John Doe"
+                placeholder="Prashanth Kumar"
               />
             </div>
 
@@ -122,7 +122,7 @@ const Register = () => {
                 value={email}
                 onChange={handleChange}
                 className="input-modern"
-                placeholder="john@example.com"
+                placeholder="name@example.com"
               />
             </div>
 
