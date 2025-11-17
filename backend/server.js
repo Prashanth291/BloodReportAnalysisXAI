@@ -5,11 +5,13 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import analysisRoutes from "./routes/analysisRoutes.js";
 import parameterRoutes from "./routes/parameterRoutes.js";
+import chatbotRoutes from "./routes/chatbotRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import {
   initializeGeminiAPI,
   verifyGeminiConnection,
 } from "./services/geminiService.js";
+import { initializeChatbot } from "./services/chatbotService.js";
 
 // Load env vars
 dotenv.config();
@@ -46,6 +48,7 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
 app.use("/api/auth", authRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api/parameters", parameterRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 // Error handling middleware
 app.use(notFound);
@@ -93,4 +96,8 @@ app.listen(PORT, async () => {
       await verifyGeminiConnection();
     }
   }
+
+  // Initialize medical chatbot
+  console.log("\n");
+  initializeChatbot();
 });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getUserReports, deleteReport } from "../services/analysisService";
 import LoadingScreen from "../components/LoadingScreen";
+import MedicalChatbot from "../components/MedicalChatbot";
 
 const Dashboard = () => {
   const [reports, setReports] = useState([]);
@@ -377,6 +378,9 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Medical Chatbot */}
+      <MedicalChatbot />
     </div>
   );
 };

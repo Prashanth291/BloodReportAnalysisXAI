@@ -4,6 +4,7 @@ import { getUserReports } from "../services/analysisService";
 import LoadingScreen from "../components/LoadingScreen";
 import ParameterCard from "../components/ParameterCard";
 import CategoryAnalysis from "../components/CategoryAnalysis";
+import MedicalChatbot from "../components/MedicalChatbot";
 
 const HealthDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -331,6 +332,9 @@ const HealthDashboard = () => {
           </Link>
         </div>
       </div>
+
+      {/* Medical Chatbot */}
+      <MedicalChatbot />
     </div>
   );
 };

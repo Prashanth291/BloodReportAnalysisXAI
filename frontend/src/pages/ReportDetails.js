@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getReportById, deleteReport } from "../services/analysisService";
 import LoadingScreen from "../components/LoadingScreen";
 import DocusParameterCard from "../components/DocusParameterCard";
+import MedicalChatbot from "../components/MedicalChatbot";
 
 const ReportDetails = () => {
   const { id } = useParams();
@@ -377,6 +378,9 @@ const ReportDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Medical Chatbot */}
+      <MedicalChatbot reportData={report} />
     </div>
   );
 };

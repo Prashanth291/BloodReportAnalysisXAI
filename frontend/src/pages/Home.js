@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import MedicalChatbot from "../components/MedicalChatbot";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -413,6 +414,9 @@ const Home = () => {
           )}
         </div>
       </div>
+
+      {/* Medical Chatbot */}
+      <MedicalChatbot />
     </div>
   );
 };
