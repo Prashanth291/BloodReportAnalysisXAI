@@ -39,8 +39,6 @@ Think of it as having both a **medical expert** (comprehensive clinical template
 - AI-powered text extraction using **Google Gemini**
 - Automatically identifies and extracts 15+ CBC parameters
 
-![Report Upload](images/report-upload.png)
-
 ### 🧠 **Explainable AI (XAI) Analysis**
 - **12 trained ML models** (99.6-100% accuracy) using XGBoost trained on 100,000+ samples for parameter classification
 - **SHAP TreeExplainer** providing feature attribution for every prediction
@@ -102,8 +100,6 @@ When you click on any parameter, you get a comprehensive analysis page featuring
 - **Explainability Metrics**: SHAP feature importances showing what influenced the prediction
 - **Related Parameters**: How this connects to other test results
 - **Historical Trends**: Graph showing how this parameter has changed over time
-
-![Parameter Details](images/parameter-details.png)
 
 ### 🔐 **Secure & Professional**
 - JWT-based authentication
@@ -435,7 +431,7 @@ npm start
 4. Check your email for the verification OTP
 5. Enter the OTP to activate your account
 
-![Registration Flow](images/registration-flow.png)
+![Registration Flow](images/registration-process.png)
 
 ### Step 2: Upload a Blood Report
 1. Log in with your credentials
@@ -460,8 +456,6 @@ npm start
      - Feature Importances: Top 5 contributing factors with impact scores
      - SHAP Explanation: Natural language description (e.g., "Key factors: hemoglobin_zscore decreases prediction (-4.09)")
    - **Confidence Score**: AI prediction confidence (0-1 scale)
-
-![Parameter Details](images/parameter-details.png)
 
 ### Step 4: Chat with AI Medical Assistant
 1. Click the floating purple chat button (bottom-right)
@@ -824,8 +818,6 @@ This project implements concepts from:
 - [ ] Telemedicine consultation booking integration
 - [ ] Enhanced chatbot with medical image analysis
 - [ ] Wearable device integration for continuous monitoring
-
-![Feature Roadmap](images/feature-roadmap.png)
 
 ---
 
