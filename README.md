@@ -2,6 +2,14 @@
 
 > *Transforming complex medical test results into clear, actionable health insights with AI-powered transparency*
 
+![Landing Page](images/landing-page.png)
+
+## 🎓 Research Group
+
+This project was developed as part of academic research focused on **Explainable Artificial Intelligence (XAI) applications in healthcare diagnostics**. The Blood Report Analysis XAI system demonstrates the practical implementation of interpretable machine learning models for medical data analysis, enabling healthcare professionals to understand AI-driven insights through SHAP (SHapley Additive exPlanations) visualizations and transparent decision-making processes.
+
+The research emphasizes **bridging the gap between complex AI algorithms and clinical usability**, ensuring that automated blood test analysis remains comprehensible, trustworthy, and actionable for medical practitioners and patients alike.
+
 ## 💡 What is This?
 
 Ever received blood test results and felt overwhelmed by medical terminology, numerical values, and cryptic abbreviations? **Blood Report Analysis XAI** solves this exact problem by combining artificial intelligence with medical expertise to make healthcare information accessible to everyone.
@@ -24,10 +32,14 @@ Think of it as having both a **medical expert** (comprehensive clinical template
 
 ## ✨ Key Features
 
+![Dashboard Overview](images/dashboard-overview.png)
+
 ### 🔍 **Smart Report Processing**
 - Upload blood reports in **JPG, PNG, or PDF** format
 - AI-powered text extraction using **Google Gemini**
 - Automatically identifies and extracts 15+ CBC parameters
+
+![Report Upload](images/report-upload.png)
 
 ### 🧠 **Explainable AI (XAI) Analysis**
 - **12 trained ML models** (99.6-100% accuracy) using XGBoost trained on 100,000+ samples for parameter classification
@@ -39,11 +51,67 @@ Think of it as having both a **medical expert** (comprehensive clinical template
 - Clear status classification: "Low", "Normal", "High", "Critical" for each parameter
 - Natural language explanations: "Key factors: hemoglobin_zscore increases prediction (4.09); rbc_count contributes (2.21)"
 
+![XAI Analysis](images/xai-analysis.png)
+
+### 💬 **AI Medical Chatbot**
+- **Powered by Groq AI** (Llama 3.3-70b) for fast, intelligent responses
+- Context-aware conversations about blood test results
+- Markdown-formatted responses with proper styling
+- Quick question suggestions across 4 categories
+- Available on all authenticated pages via floating button
+- Real-time medical guidance and explanations
+
+![AI Chatbot](images/ai-chatbot.png)
+
+### 📊 **Health Dashboard & Reports**
+
+The platform provides two comprehensive dashboard views for managing and understanding your health data:
+
+#### **Reports Dashboard**
+- **Report Management**: View all uploaded blood test reports in chronological order
+- **Quick Actions**: Upload new reports, view details, or delete old records
+- **Status Overview**: Each report shows extraction status (Success/Failed) and parameter count
+- **Date Tracking**: Automatic timestamp for when reports were uploaded
+- **Direct Access**: Click any report to view detailed parameter-by-parameter analysis
+
+![Reports Dashboard](images/dashboard-overview.png)
+
+#### **Health Dashboard**
+- **Visual Health Summary**: Color-coded status indicators for all extracted parameters
+  - 🟢 Green = Normal range
+  - 🟡 Yellow = Borderline/Slightly abnormal  
+  - 🔴 Red = Abnormal (requires attention)
+  - ⚠️ Critical indicators for severe abnormalities
+- **Parameter Cards**: Each parameter displayed with:
+  - Current value and unit of measurement
+  - Reference range for comparison
+  - Status badge (Normal/Low/High/Critical)
+  - Quick view of last test date
+- **Trend Analysis**: Historical tracking of parameter changes over time
+- **Interactive Elements**: Click any parameter card for detailed AI interpretation
+- **Smart Filtering**: Filter by parameter type (CBC, Diabetes, Kidney, etc.)
+- **Export Options**: Download reports as PDF with AI insights
+
+![Health Dashboard](images/health-dashboard.png)
+
+#### **Parameter Detail View**
+When you click on any parameter, you get a comprehensive analysis page featuring:
+- **AI-Powered Interpretation**: Dual-layer explanation (SHAP + Medical Knowledge)
+- **Clinical Context**: Why this value matters for your health
+- **Actionable Insights**: Specific recommendations based on your results
+- **Explainability Metrics**: SHAP feature importances showing what influenced the prediction
+- **Related Parameters**: How this connects to other test results
+- **Historical Trends**: Graph showing how this parameter has changed over time
+
+![Parameter Details](images/parameter-details.png)
+
 ### 🔐 **Secure & Professional**
 - JWT-based authentication
 - Email verification with OTP
 - MongoDB for secure data storage
 - HIPAA-conscious design principles
+
+![Authentication](images/authentication.png)
 
 ### 📊 **Comprehensive Parameter Coverage**
 Currently supports **28 parameters** across multiple test categories:
@@ -85,6 +153,8 @@ Each parameter includes:
 
 This is a **full-stack microservices architecture** designed for scalability and maintainability:
 
+![System Architecture](images/system-architecture.png)
+
 ```
 ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
 │  React Frontend │─────▶│  Node.js Backend│─────▶│    MongoDB      │
@@ -97,6 +167,7 @@ This is a **full-stack microservices architecture** designed for scalability and
                          │   (Port 5001)   │
                          │  • ML Models    │
                          │  • SHAP Engine  │
+                         │  • Groq AI      │
                          └─────────────────┘
 ```
 
@@ -114,7 +185,9 @@ This is a **full-stack microservices architecture** designed for scalability and
 - **JWT** - Authentication
 - **Nodemailer** - Email verification
 - **Multer** - File uploads
-- **Google Gemini AI** - Text extraction
+- **Google Gemini AI** - Text extraction from reports
+- **Groq AI Integration** - Medical chatbot (Llama 3.3-70b model)
+- **Axios** - HTTP client for AI service communication
 
 #### ML Service (Python/Flask)
 - **Flask** - Microservice API
@@ -137,13 +210,19 @@ BloodReportAnalysisXAI/
 │   ├── controllers/               # Route handlers
 │   │   ├── authController.js      # Authentication logic
 │   │   ├── analysisController.js  # Report analysis
-│   │   └── parameterController.js # Parameter management
+│   │   ├── parameterController.js # Parameter management
+│   │   └── chatbotController.js   # AI chatbot endpoints
 │   ├── middleware/                # Express middleware
 │   ├── models/                    # MongoDB schemas
 │   ├── routes/                    # API routes
+│   │   ├── authRoutes.js
+│   │   ├── analysisRoutes.js
+│   │   ├── parameterRoutes.js
+│   │   └── chatbotRoutes.js       # Chatbot API routes
 │   ├── services/                  # Business logic
 │   │   ├── emailService.js        # Email/OTP
-│   │   └── geminiService.js       # AI text extraction
+│   │   ├── geminiService.js       # AI text extraction
+│   │   └── chatbotService.js      # Groq AI integration
 │   ├── utils/                     # Helpers
 │   ├── uploads/                   # Uploaded reports
 │   └── server.js                  # Entry point
@@ -152,9 +231,19 @@ BloodReportAnalysisXAI/
 │   ├── public/
 │   └── src/
 │       ├── components/            # Reusable UI components
+│       │   ├── Navbar.js
+│       │   ├── MedicalChatbot.js  # Floating AI chatbot widget
+│       │   └── ...
 │       ├── context/               # React Context (Auth)
 │       ├── pages/                 # Route pages
+│       │   ├── Home.js
+│       │   ├── Dashboard.js
+│       │   ├── HealthDashboard.js
+│       │   └── ReportDetails.js
 │       ├── services/              # API calls
+│       │   ├── analysisService.js
+│       │   ├── authService.js
+│       │   └── chatbotService.js  # Chatbot API client
 │       └── App.js
 │
 ├── 📂 flask-xai-service/          # Python ML Microservice
@@ -199,8 +288,15 @@ Before you begin, make sure you have:
 1. **Google Gemini API Key** (Free tier available)
    - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
    - Create a new API key
+   - Used for: Blood report text extraction from images/PDFs
 
-2. **Gmail App Password** (for email verification)
+2. **Groq API Key** (FREE - Recommended for chatbot)
+   - Visit [Groq Console](https://console.groq.com/keys)
+   - Sign up and create an API key
+   - Used for: AI medical chatbot powered by Llama 3.3-70b
+   - Benefits: 100% free, very fast responses (2-5 seconds)
+
+3. **Gmail App Password** (for email verification)
    - Enable 2FA on your Google Account
    - Generate app password: [Google Account Security](https://myaccount.google.com/security)
 
@@ -245,8 +341,11 @@ EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-gmail-app-password
 EMAIL_FROM=your-email@gmail.com
 
-# Google Gemini AI
+# Gemini AI Configuration
 GEMINI_API_KEY=your-gemini-api-key-here
+
+# Medical Chatbot Configuration (Groq AI - FREE)
+GROQ_API_KEY=your-groq-api-key-here
 
 # Flask XAI Service
 FLASK_XAI_URL=http://localhost:5001
@@ -336,11 +435,15 @@ npm start
 4. Check your email for the verification OTP
 5. Enter the OTP to activate your account
 
+![Registration Flow](images/registration-flow.png)
+
 ### Step 2: Upload a Blood Report
 1. Log in with your credentials
 2. Go to "Upload Report"
 3. Select a blood test report (JPG, PNG, or PDF)
 4. The system will extract parameters using AI
+
+![Upload Process](images/upload-process.png)
 
 ### Step 3: Get AI-Powered Interpretation
 1. View extracted parameters with color-coded status indicators
@@ -357,6 +460,16 @@ npm start
      - Feature Importances: Top 5 contributing factors with impact scores
      - SHAP Explanation: Natural language description (e.g., "Key factors: hemoglobin_zscore decreases prediction (-4.09)")
    - **Confidence Score**: AI prediction confidence (0-1 scale)
+
+![Parameter Details](images/parameter-details.png)
+
+### Step 4: Chat with AI Medical Assistant
+1. Click the floating purple chat button (bottom-right)
+2. Ask questions about your blood test results
+3. Get instant, medically-accurate responses
+4. Use quick question suggestions for common queries
+
+![Chatbot Interaction](images/chatbot-interaction.png)
 
 ---
 
@@ -701,14 +814,18 @@ This project implements concepts from:
 
 ## 🔮 Future Enhancements
 
-- [ ] Add 40+ more parameters (Liver function, Lipid profile, Electrolytes, Urine analysis)
-- [ ] Mobile app (React Native)
-- [ ] Multi-language support (Spanish, Hindi, Mandarin)
-- [ ] Historical trend analysis with visualizations
-- [ ] Integration with EHR systems (HL7 FHIR)
+- [ ] Add 40+ more parameters (Liver function, Lipid profile complete, Electrolytes, Complete urine analysis)
+- [ ] Mobile app (React Native) for iOS and Android
+- [ ] Multi-language support (Spanish, Hindi, Mandarin, Arabic)
+- [ ] Historical trend analysis with advanced visualizations
+- [ ] Integration with EHR systems (HL7 FHIR standard)
 - [ ] Voice-based report reading for accessibility
-- [ ] PDF report generation with insights
+- [ ] PDF report generation with AI insights
 - [ ] Telemedicine consultation booking integration
+- [ ] Enhanced chatbot with medical image analysis
+- [ ] Wearable device integration for continuous monitoring
+
+![Feature Roadmap](images/feature-roadmap.png)
 
 ---
 
