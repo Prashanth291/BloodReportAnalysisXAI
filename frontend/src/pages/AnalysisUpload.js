@@ -90,7 +90,16 @@ const AnalysisUpload = () => {
       const response = await uploadReport(file);
       setResult(response.data);
     } catch (err) {
-      setError(err.message || "Failed to analyze report");
+      console.error("Upload error:", err);
+      
+      // Handle different error types
+      if (err.error?.type === 'INVALID_DOCUMENT_TYPE') {
+        setError(
+          `❌ Invalid Document Type\n\n${err.message}\n\n${err.error.details}`
+        );
+      } else {
+        setError(err.message || "Failed to analyze report. Please ensure the document is a clear, readable blood test report.");
+      }
     } finally {
       setLoading(false);
     }
@@ -270,10 +279,10 @@ const AnalysisUpload = () => {
 
               {/* Error Alert */}
               {error && (
-                <div className="mt-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 animate-slide-down">
-                  <div className="flex items-center space-x-2">
+                <div className="mt-6 p-6 rounded-xl bg-red-50 border-2 border-red-200 animate-slide-down">
+                  <div className="flex items-start space-x-3">
                     <svg
-                      className="w-5 h-5 flex-shrink-0"
+                      className="w-6 h-6 flex-shrink-0 text-red-600 mt-0.5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -285,7 +294,23 @@ const AnalysisUpload = () => {
                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span>{error}</span>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-red-900 mb-2">Upload Error</h4>
+                      <p className="text-red-700 whitespace-pre-line">{error}</p>
+                      {error.includes('INVALID_DOCUMENT_TYPE') && (
+                        <div className="mt-4 p-4 bg-white rounded-lg border border-red-200">
+                          <p className="text-sm font-medium text-gray-900 mb-2">✅ Accepted Document Types:</p>
+                          <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                            <li>Complete Blood Count (CBC)</li>
+                            <li>Lipid Profile</li>
+                            <li>Liver Function Test (LFT)</li>
+                            <li>Kidney Function Test (KFT)</li>
+                            <li>Thyroid Function Test</li>
+                            <li>Blood Sugar Tests (Glucose, HbA1c)</li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

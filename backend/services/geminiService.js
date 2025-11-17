@@ -4,6 +4,62 @@ import fs from "fs";
 // Initialize Gemini AI (will be initialized after env is loaded)
 let genAI;
 
+// Common blood test parameter keywords for validation
+const BLOOD_PARAMETER_KEYWORDS = [
+  'hemoglobin', 'hb', 'haemoglobin',
+  'wbc', 'white blood cell', 'leukocyte',
+  'rbc', 'red blood cell', 'erythrocyte',
+  'platelet', 'thrombocyte',
+  'glucose', 'sugar', 'hba1c',
+  'cholesterol', 'ldl', 'hdl', 'triglyceride',
+  'creatinine', 'urea', 'bun',
+  'sgot', 'sgpt', 'alt', 'ast',
+  'tsh', 't3', 't4', 'thyroid',
+  'neutrophil', 'lymphocyte', 'eosinophil', 'monocyte', 'basophil',
+  'mcv', 'mch', 'mchc', 'hematocrit', 'pcv',
+  'esr', 'crp',
+  'bilirubin', 'alkaline phosphatase'
+];
+
+// Validate if the extracted data is a blood report
+const isValidBloodReport = (data) => {
+  // Check if data has the expected structure
+  if (!data || typeof data !== 'object') {
+    console.warn("⚠️  Invalid data structure");
+    return false;
+  }
+
+  // Check if parameters array exists
+  if (!data.parameters || !Array.isArray(data.parameters)) {
+    console.warn("⚠️  Parameters array missing or invalid");
+    return false;
+  }
+
+  // Check if parameters array has at least one parameter
+  if (data.parameters.length === 0) {
+    console.warn("⚠️  No parameters found in document");
+    return false;
+  }
+
+  // Check if at least one parameter matches blood test keywords
+  const hasBloodParameters = data.parameters.some(param => {
+    if (!param.name) return false;
+    const paramName = param.name.toLowerCase();
+    return BLOOD_PARAMETER_KEYWORDS.some(keyword => 
+      paramName.includes(keyword)
+    );
+  });
+
+  if (!hasBloodParameters) {
+    console.warn("⚠️  No recognized blood test parameters found in document");
+    console.warn(`   Found ${data.parameters.length} parameters: ${data.parameters.map(p => p.name || 'unnamed').join(', ')}`);
+    return false;
+  }
+
+  console.log(`✅ Valid blood report detected with ${data.parameters.length} blood parameters`);
+  return true;
+};
+
 // Function to initialize and verify API key
 export const initializeGeminiAPI = () => {
   console.log("\n🔑 Gemini API Key Verification:");
@@ -60,9 +116,9 @@ export const analyzeBloodReport = async (filePath, mimeType) => {
     console.log("\n📊 Analyzing blood report (Image/Document):");
     console.log(`   File: ${filePath}`);
     console.log(`   MIME Type: ${mimeType}`);
-    console.log(`   Model: gemini-2.5-pro`);
+    console.log(`   Model: gemini-2.5-flash`);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `You are a medical AI assistant specialized in analyzing blood test reports. 
 
@@ -149,6 +205,24 @@ Extract common blood parameters such as:
     // Parse JSON
     const parsedData = JSON.parse(jsonText);
 
+    console.log("\n🔍 Validating extracted data (IMAGE):");
+    console.log(`   Parameters found: ${parsedData.parameters?.length || 0}`);
+    
+    // Validate that this is actually a blood report
+    if (!isValidBloodReport(parsedData)) {
+      console.error("❌ Validation failed: Not a valid blood report");
+      throw new Error(
+        "The uploaded document does not appear to be a blood test report. Please upload a valid blood report containing CBC or other blood test parameters."
+      );
+    }
+
+    console.log("✅ Validation passed: Valid blood report detected\n");
+    if (!isValidBloodReport(parsedData)) {
+      throw new Error(
+        "The uploaded document does not appear to be a blood test report. Please upload a valid blood report containing CBC or other blood test parameters."
+      );
+    }
+
     return {
       success: true,
       data: parsedData,
@@ -177,9 +251,9 @@ export const analyzePDFReport = async (filePath) => {
   try {
     console.log("\n📄 Analyzing blood report (PDF):");
     console.log(`   File: ${filePath}`);
-    console.log(`   Model: gemini-2.5-pro`);
+    console.log(`   Model: gemini-2.5-flash`);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `You are a medical AI assistant specialized in analyzing blood test reports. 
 
@@ -266,6 +340,24 @@ Extract common blood parameters such as:
     // Parse JSON
     const parsedData = JSON.parse(jsonText);
 
+    console.log("\n🔍 Validating extracted data (PDF):");
+    console.log(`   Parameters found: ${parsedData.parameters?.length || 0}`);
+    
+    // Validate that this is actually a blood report
+    if (!isValidBloodReport(parsedData)) {
+      console.error("❌ Validation failed: Not a valid blood report");
+      throw new Error(
+        "The uploaded document does not appear to be a blood test report. Please upload a valid blood report containing CBC or other blood test parameters."
+      );
+    }
+
+    console.log("✅ Validation passed: Valid blood report detected\n");
+    if (!isValidBloodReport(parsedData)) {
+      throw new Error(
+        "The uploaded document does not appear to be a blood test report. Please upload a valid blood report containing CBC or other blood test parameters."
+      );
+    }
+
     return {
       success: true,
       data: parsedData,
@@ -293,7 +385,7 @@ Extract common blood parameters such as:
 export const verifyGeminiConnection = async () => {
   try {
     console.log("🔍 Testing Gemini API connection...");
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent([
       "Say 'Connected' if you can read this.",
     ]);

@@ -65,9 +65,27 @@ export const uploadReport = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    // Determine appropriate status code and error message
+    let statusCode = 500;
+    let errorMessage = error.message || "Failed to analyze report";
+
+    // Handle specific error types
+    if (error.message && error.message.includes("does not appear to be a blood test report")) {
+      statusCode = 400;
+      errorMessage = error.message;
+    } else if (error.message && error.message.includes("Failed to analyze")) {
+      statusCode = 422;
+    }
+
+    res.status(statusCode).json({
       success: false,
-      message: error.message || "Failed to analyze report",
+      message: errorMessage,
+      error: {
+        type: statusCode === 400 ? 'INVALID_DOCUMENT_TYPE' : 'ANALYSIS_FAILED',
+        details: statusCode === 400 
+          ? 'Please upload a medical blood test report (CBC, Lipid Profile, Liver Function, Kidney Function, etc.)'
+          : 'The document could not be processed. Please ensure it is a clear, readable blood test report.'
+      }
     });
   }
 };
